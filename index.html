@@ -294,7 +294,7 @@ function showSyncStatus(status) {
 }
 
 // ── Data ──────────────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'miro_data_v6';
+const STORAGE_KEY = 'miro_data_v7';
 
 function loadData() {
   try {
@@ -404,12 +404,16 @@ function render() {
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
 function renderDashboard() {
-  const fm = STATE.finance[STATE.activeMonth];
+  if (!STATE.finance || !STATE.finance[STATE.activeMonth]) {
+    STATE.finance = JSON.parse(JSON.stringify(DEFAULT_STATE.finance));
+    STATE.activeMonth = 7;
+  }
+  const fm = STATE.finance[STATE.activeMonth] || {};
   const income = (fm.incomeIG||0)+(fm.incomeAbout||0)+(fm.incomeOther||0);
-  const exp = (fm.expMaterials||0)+(fm.expFurniture||0)+(fm.expPackaging||0)+(fm.expDeliveryIn||0)+(fm.expAds||0)+(fm.expPhoto||0)+(fm.expStudio||0)+(fm.expSmm||0)+(fm.expDeliveryOut||0)+(fm.expOther||0);
+  const exp = (fm.expMaterials||0)+(fm.expFurniture||0)+(fm.expPackaging||0)+(fm.expDeliveryIn||0)+(fm.expAds||0)+(fm.expPhoto||0)+(fm.expStudio||0)+(fm.expSmm||0)+(fm.expDeliveryOut||0)+(fm.expOther||0)+(fm.expSalary||0)+(fm.expTeam||0);
   const profit = income - exp;
   const yearIncome = STATE.finance.reduce((s,m)=>s+(m.incomeIG||0)+(m.incomeAbout||0)+(m.incomeOther||0),0);
-  const yearExp = STATE.finance.reduce((s,m)=>s+(m.expMaterials||0)+(m.expFurniture||0)+(m.expPackaging||0)+(m.expDeliveryIn||0)+(m.expAds||0)+(m.expPhoto||0)+(m.expStudio||0)+(m.expSmm||0)+(m.expDeliveryOut||0)+(m.expOther||0),0);
+  const yearExp = STATE.finance.reduce((s,m)=>s+(m.expMaterials||0)+(m.expFurniture||0)+(m.expPackaging||0)+(m.expDeliveryIn||0)+(m.expAds||0)+(m.expPhoto||0)+(m.expStudio||0)+(m.expSmm||0)+(m.expDeliveryOut||0)+(m.expOther||0)+(m.expSalary||0)+(m.expTeam||0),0);
 
   const hits = STATE.products.filter(p=>p.status==='Хит').map(p=>`
     <div class="fin-row">
@@ -641,7 +645,11 @@ function renderPurchases() {
 
 // ── Finance ───────────────────────────────────────────────────────────────────
 function renderFinance() {
-  const fm = STATE.finance[STATE.activeMonth];
+  if (!STATE.finance || !STATE.finance[STATE.activeMonth]) {
+    STATE.finance = JSON.parse(JSON.stringify(DEFAULT_STATE.finance));
+    STATE.activeMonth = 7;
+  }
+  const fm = STATE.finance[STATE.activeMonth] || {};
   const income = (fm.incomeIG||0)+(fm.incomeAbout||0)+(fm.incomeOther||0);
 
   // Expense categories grouped
