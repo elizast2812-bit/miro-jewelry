@@ -18,8 +18,8 @@
   --green:#27AE60;--green-p:#EAF7EE;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
-html,body{height:100%;background:var(--bg);font-family:'Inter',sans-serif;color:var(--dark);overflow:hidden}
-#app{display:flex;flex-direction:column;height:100%;height:-webkit-fill-available}
+html,body{height:100%;background:var(--bg);font-family:'Inter',sans-serif;color:var(--dark)}
+#app{display:flex;flex-direction:column;min-height:100vh}
 
 /* ── Header ── */
 .header{background:var(--dark);padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
@@ -29,6 +29,7 @@ html,body{height:100%;background:var(--bg);font-family:'Inter',sans-serif;color:
 
 /* ── Scroll area ── */
 .scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(80px + var(--safe-bottom))}
+@media(min-width:768px){.scroll{padding:24px 24px 100px}}
 
 /* ── Bottom nav ── */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--dark);display:flex;padding:8px 0 calc(8px + var(--safe-bottom));z-index:50;border-top:1px solid #333}
@@ -37,6 +38,27 @@ html,body{height:100%;background:var(--bg);font-family:'Inter',sans-serif;color:
 .nav-label{font-size:10px;color:#666;font-weight:500;transition:color .15s}
 .nav-item.active .nav-label{color:var(--gold)}
 .nav-item.active .nav-icon{filter:drop-shadow(0 0 4px rgba(201,169,110,.6))}
+
+/* ── Desktop layout ── */
+@media(min-width:768px){
+  #app{flex-direction:row}
+  .header{display:none}
+  .bottom-nav{position:fixed;left:0;top:0;bottom:0;width:200px;flex-direction:column;padding:0;border-top:none;border-right:1px solid #333;justify-content:flex-start}
+  .nav-item{flex:none;flex-direction:row;padding:14px 24px;gap:12px;justify-content:flex-start;border-left:3px solid transparent}
+  .nav-item.active{background:#252525;border-left-color:var(--gold)}
+  .nav-icon{font-size:18px}
+  .nav-label{font-size:13px;color:#999}
+  .nav-item.active .nav-label{color:#fff}
+  .scroll{margin-left:200px;padding:28px 32px 40px}
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+  .finance-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .form-row{grid-template-columns:1fr 1fr}
+  .desktop-header{display:flex !important}
+  .bottom-nav::before{content:'miro';font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:1px;padding:24px 24px 4px;display:block}
+  .bottom-nav::after{content:'JEWELRY PLATFORM';font-size:9px;color:var(--gold);letter-spacing:3px;padding:0 24px 20px;display:block;border-bottom:1px solid #333;margin-bottom:8px}
+  .modal{border-radius:16px;max-width:600px;margin:auto}
+  .modal-backdrop{align-items:center}
+}
 
 /* ── Cards ── */
 .card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
@@ -196,6 +218,9 @@ html,body{height:100%;background:var(--bg);font-family:'Inter',sans-serif;color:
       <span class="nav-icon">💰</span>
       <span class="nav-label">Финансы</span>
     </div>
+    <div style="padding:16px 24px;margin-top:auto;border-top:1px solid #333">
+      <span id="sync-status-sidebar" style="font-size:11px;color:#666">📱 Локально</span>
+    </div>
   </nav>
 </div>
 
@@ -254,8 +279,6 @@ function scheduleSave() {
 }
 
 function showSyncStatus(status) {
-  const el = document.getElementById('sync-status');
-  if (!el) return;
   const map = {
     connected: { text: '☁️ Подключено', color: '#27AE60' },
     synced:    { text: '✓ Сохранено', color: '#27AE60' },
@@ -264,8 +287,10 @@ function showSyncStatus(status) {
     local:     { text: '📱 Локально', color: '#8A8A8A' },
   };
   const s = map[status] || map.local;
-  el.textContent = s.text;
-  el.style.color = s.color;
+  ['sync-status','sync-status-sidebar'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el){ el.textContent = s.text; el.style.color = s.color; }
+  });
 }
 
 // ── Data ──────────────────────────────────────────────────────────────────────
