@@ -294,7 +294,7 @@ function showSyncStatus(status) {
 }
 
 // ── Data ──────────────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'miro_data_v3';
+const STORAGE_KEY = 'miro_data_v5';
 
 function loadData() {
   try {
@@ -340,14 +340,14 @@ const DEFAULT_STATE = {
 };
 
 let STATE = loadData() || JSON.parse(JSON.stringify(DEFAULT_STATE));
-// Ensure finance array always has 12 months
-if (!STATE.finance || STATE.finance.length < 12) {
-  STATE.finance = JSON.parse(JSON.stringify(DEFAULT_STATE.finance));
-}
-if (STATE.activeMonth === undefined) STATE.activeMonth = 7;
-if (!STATE.products) STATE.products = [];
-if (!STATE.purchases) STATE.purchases = [];
-if (!STATE.calcItems) STATE.calcItems = JSON.parse(JSON.stringify(DEFAULT_STATE.calcItems));
+// Validate and repair STATE
+const validPages = ['dashboard','catalog','calc','purchases','finance'];
+if (!validPages.includes(STATE.currentPage)) STATE.currentPage = 'dashboard';
+if (!STATE.finance || !Array.isArray(STATE.finance) || STATE.finance.length < 12) STATE.finance = JSON.parse(JSON.stringify(DEFAULT_STATE.finance));
+if (STATE.activeMonth === undefined || STATE.activeMonth < 0 || STATE.activeMonth > 11) STATE.activeMonth = 7;
+if (!STATE.products || !Array.isArray(STATE.products)) STATE.products = [];
+if (!STATE.purchases || !Array.isArray(STATE.purchases)) STATE.purchases = [];
+if (!STATE.calcItems || !Array.isArray(STATE.calcItems)) STATE.calcItems = JSON.parse(JSON.stringify(DEFAULT_STATE.calcItems));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function fmt(n) { return n ? Number(n).toLocaleString('ru') + ' грн' : '—'; }
@@ -371,6 +371,8 @@ function render() {
     purchases: renderPurchases,
     finance: renderFinance,
   };
+  const validPages = ['dashboard','catalog','calc','purchases','finance'];
+  if (!validPages.includes(STATE.currentPage)) STATE.currentPage = 'dashboard';
   try {
     document.getElementById('scroll-area').innerHTML = pages[STATE.currentPage]();
   } catch(e) {
