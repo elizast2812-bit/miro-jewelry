@@ -294,7 +294,7 @@ function showSyncStatus(status) {
 }
 
 // ── Data ──────────────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'miro_data_v5';
+const STORAGE_KEY = 'miro_data_v6';
 
 function loadData() {
   try {
@@ -364,27 +364,32 @@ function render() {
   const scrollArea = document.getElementById('scroll-area');
   if (!scrollArea) { setTimeout(render, 100); return; }
   saveData();
-  const pages = {
-    dashboard: renderDashboard,
-    catalog: renderCatalog,
-    calc: renderCalc,
-    purchases: renderPurchases,
-    finance: renderFinance,
-  };
+
+  // Validate page
   const validPages = ['dashboard','catalog','calc','purchases','finance'];
   if (!validPages.includes(STATE.currentPage)) STATE.currentPage = 'dashboard';
+
+  // Render page content
+  var html = '';
   try {
-    document.getElementById('scroll-area').innerHTML = pages[STATE.currentPage]();
+    if (STATE.currentPage === 'dashboard') html = renderDashboard();
+    else if (STATE.currentPage === 'catalog') html = renderCatalog();
+    else if (STATE.currentPage === 'calc') html = renderCalc();
+    else if (STATE.currentPage === 'purchases') html = renderPurchases();
+    else if (STATE.currentPage === 'finance') html = renderFinance();
+    scrollArea.innerHTML = html;
   } catch(e) {
-    console.error('Page render error:', e);
-    document.getElementById('scroll-area').innerHTML = '<div style="padding:20px;color:red">Ошибка рендера: ' + e.message + '</div>';
+    console.error('Render error:', e);
+    scrollArea.innerHTML = '<div style="padding:20px;color:red;font-size:13px"><b>Ошибка:</b> ' + e.message + '</div>';
   }
-  document.querySelectorAll('.nav-item').forEach(el => {
+
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(function(el) {
     el.classList.toggle('active', el.dataset.page === STATE.currentPage);
   });
 
-  // Header add button
-  const addBtn = document.getElementById('header-add-btn');
+  // Header add button (mobile only)
+  var addBtn = document.getElementById('header-add-btn');
   if (addBtn) {
     if (STATE.currentPage === 'catalog' || STATE.currentPage === 'purchases') {
       addBtn.style.display = 'block';
