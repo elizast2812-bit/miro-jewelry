@@ -762,7 +762,17 @@ async function doAiFill() {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 render();
-initSB().then(function(){ return loadCloud(); }).then(function(cloud){ if(cloud){ S=validateState(cloud); localStorage.setItem(SK,JSON.stringify(S)); render(); } });
+initSB().then(function(){ return loadCloud(); }).then(function(cloud){
+  if (cloud) {
+    var validated = validateState(cloud);
+    // Only use cloud data if it has valid products array
+    if (Array.isArray(validated.products)) {
+      S = validated;
+      localStorage.setItem(SK, JSON.stringify(S));
+      render();
+    }
+  }
+}).catch(function(e){ console.warn('Cloud init error', e); });
 </script>
 </body>
 </html>
