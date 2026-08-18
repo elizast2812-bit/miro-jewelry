@@ -340,6 +340,14 @@ const DEFAULT_STATE = {
 };
 
 let STATE = loadData() || JSON.parse(JSON.stringify(DEFAULT_STATE));
+// Ensure finance array always has 12 months
+if (!STATE.finance || STATE.finance.length < 12) {
+  STATE.finance = JSON.parse(JSON.stringify(DEFAULT_STATE.finance));
+}
+if (STATE.activeMonth === undefined) STATE.activeMonth = 7;
+if (!STATE.products) STATE.products = [];
+if (!STATE.purchases) STATE.purchases = [];
+if (!STATE.calcItems) STATE.calcItems = JSON.parse(JSON.stringify(DEFAULT_STATE.calcItems));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function fmt(n) { return n ? Number(n).toLocaleString('ru') + ' грн' : '—'; }
@@ -353,6 +361,8 @@ function showToast(msg) {
 }
 
 function render() {
+  const scrollArea = document.getElementById('scroll-area');
+  if (!scrollArea) { setTimeout(render, 100); return; }
   saveData();
   const pages = {
     dashboard: renderDashboard,
@@ -361,18 +371,25 @@ function render() {
     purchases: renderPurchases,
     finance: renderFinance,
   };
-  document.getElementById('scroll-area').innerHTML = pages[STATE.currentPage]();
+  try {
+    document.getElementById('scroll-area').innerHTML = pages[STATE.currentPage]();
+  } catch(e) {
+    console.error('Page render error:', e);
+    document.getElementById('scroll-area').innerHTML = '<div style="padding:20px;color:red">Ошибка рендера: ' + e.message + '</div>';
+  }
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === STATE.currentPage);
   });
 
   // Header add button
   const addBtn = document.getElementById('header-add-btn');
-  if (STATE.currentPage === 'catalog' || STATE.currentPage === 'purchases') {
-    addBtn.style.display = 'block';
-    addBtn.onclick = STATE.currentPage === 'catalog' ? openProductModal : openPurchaseModal;
-  } else {
-    addBtn.style.display = 'none';
+  if (addBtn) {
+    if (STATE.currentPage === 'catalog' || STATE.currentPage === 'purchases') {
+      addBtn.style.display = 'block';
+      addBtn.onclick = STATE.currentPage === 'catalog' ? openProductModal : openPurchaseModal;
+    } else {
+      addBtn.style.display = 'none';
+    }
   }
 
   attachListeners();
@@ -990,13 +1007,23 @@ window.handleAiFill = async function() {
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
-  await initSupabase();
-  const cloudData = await loadFromCloud();
-  if (cloudData) {
-    STATE = cloudData;
-    saveData(); // sync to localStorage too
+  try {
+    await initSupabase();
+    const cloudData = await loadFromCloud();
+    if (cloudData) {
+      STATE = cloudData;
+      saveData();
+    }
+  } catch(e) {
+    console.warn('Cloud load failed, using local:', e);
   }
-  render();
+  try {
+    render();
+  } catch(e) {
+    console.error('Render error:', e);
+    document.getElementById('scroll-area').innerHTML = 
+      '<div style="padding:20px;color:red;font-size:12px">Ошибка: ' + e.message + '<br><pre>' + e.stack + '</pre></div>';
+  }
 }
 init();
 </script>
