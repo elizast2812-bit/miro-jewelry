@@ -2,1045 +2,767 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <title>Miro Jewelry</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --red:#C0392B;--red-l:#E8534A;--red-pale:#FDF1F0;
+  --red:#C0392B;--red-pale:#FDF1F0;
   --gold:#C9A96E;--gold-l:#F5EDD8;
   --dark:#1A1A1A;--mid:#4A4A4A;--muted:#8A8A8A;
   --border:#E8E0D8;--bg:#FAF8F5;--white:#FFF;
   --green:#27AE60;--green-p:#EAF7EE;
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
 }
-html,body{height:100%;background:var(--bg);font-family:'Inter',sans-serif;color:var(--dark)}
+html,body{min-height:100vh;background:var(--bg);font-family:'Inter',sans-serif;color:var(--dark)}
 #app{display:flex;flex-direction:column;min-height:100vh}
 
-/* ── Header ── */
-.header{background:var(--dark);padding:16px 20px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.header-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:1px}
-.header-sub{font-size:9px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:1px}
-.header-action{background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer}
+/* Header (mobile only) */
+.header{background:var(--dark);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:1px}
+.logo-sub{font-size:9px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;margin-top:1px}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.header-btn{background:var(--red);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;display:none}
+#sync-h{font-size:10px;color:#888}
 
-/* ── Scroll area ── */
-.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(80px + var(--safe-bottom))}
-@media(min-width:768px){.scroll{padding:24px 24px 100px}}
+/* Scroll */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px calc(76px + var(--safe-b))}
 
-/* ── Bottom nav ── */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--dark);display:flex;padding:8px 0 calc(8px + var(--safe-bottom));z-index:50;border-top:1px solid #333}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0}
-.nav-icon{font-size:20px;line-height:1}
-.nav-label{font-size:10px;color:#666;font-weight:500;transition:color .15s}
-.nav-item.active .nav-label{color:var(--gold)}
-.nav-item.active .nav-icon{filter:drop-shadow(0 0 4px rgba(201,169,110,.6))}
+/* Bottom nav (mobile) */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--dark);display:flex;padding:8px 0 calc(6px + var(--safe-b));z-index:50;border-top:1px solid #2a2a2a}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:3px 0}
+.ni-icon{font-size:20px;line-height:1}
+.ni-label{font-size:10px;color:#666;font-weight:500}
+.ni.active .ni-label{color:var(--gold)}
 
-/* ── Desktop layout ── */
+/* Desktop */
 @media(min-width:768px){
   #app{flex-direction:row}
   .header{display:none}
-  .bottom-nav{position:fixed;left:0;top:0;bottom:0;width:200px;flex-direction:column;padding:0;border-top:none;border-right:1px solid #333;justify-content:flex-start}
-  .nav-item{flex:none;flex-direction:row;padding:14px 24px;gap:12px;justify-content:flex-start;border-left:3px solid transparent}
-  .nav-item.active{background:#252525;border-left-color:var(--gold)}
-  .nav-icon{font-size:18px}
-  .nav-label{font-size:13px;color:#999}
-  .nav-item.active .nav-label{color:#fff}
-  .scroll{margin-left:200px;padding:28px 32px 40px}
-  .stats-grid{grid-template-columns:repeat(4,1fr)}
-  .finance-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  .form-row{grid-template-columns:1fr 1fr}
-  .desktop-header{display:flex !important}
-  .bottom-nav::before{content:'miro';font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:1px;padding:24px 24px 4px;display:block}
-  .bottom-nav::after{content:'JEWELRY PLATFORM';font-size:9px;color:var(--gold);letter-spacing:3px;padding:0 24px 20px;display:block;border-bottom:1px solid #333;margin-bottom:8px}
-  .modal{border-radius:16px;max-width:600px;margin:auto}
+  .bnav{position:fixed;left:0;top:0;bottom:0;width:210px;flex-direction:column;padding:0;border-top:none;border-right:1px solid #2a2a2a;justify-content:flex-start}
+  .bnav::before{content:'miro';font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:#fff;letter-spacing:1px;padding:26px 24px 2px;display:block}
+  .bnav::after{content:'JEWELRY PLATFORM';font-size:9px;color:var(--gold);letter-spacing:3px;padding:0 24px 18px;display:block;border-bottom:1px solid #2a2a2a;margin-bottom:6px}
+  .ni{flex:none;flex-direction:row;padding:13px 24px;gap:12px;justify-content:flex-start;border-left:3px solid transparent}
+  .ni.active{background:#252525;border-left-color:var(--gold)}
+  .ni-icon{font-size:17px}
+  .ni-label{font-size:13px;color:#888}
+  .ni.active .ni-label{color:#fff}
+  .scroll{margin-left:210px;padding:28px 32px 40px}
+  .stats-grid{grid-template-columns:repeat(4,1fr)!important}
   .modal-backdrop{align-items:center}
+  .modal{border-radius:16px;max-width:620px;margin:auto}
+  #sync-d{display:block!important}
 }
 
-/* ── Cards ── */
+/* Cards */
 .card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
 .card-title{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px}
 
-/* ── Stats ── */
+/* Stats */
 .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .stat{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px}
 .stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.stat-value{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700}
+.stat-value{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700}
 .stat-sub{font-size:10px;color:var(--green);margin-top:2px}
 
-/* ── Buttons ── */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;font-family:'Inter',sans-serif}
-.btn-primary{background:var(--red);color:#fff;width:100%;justify-content:center;padding:14px}
-.btn-gold{background:var(--gold);color:#fff;width:100%;justify-content:center;padding:14px}
-.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--mid);padding:10px 16px}
-.btn-sm{padding:7px 14px;font-size:12px}
-.btn-ghost{background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:6px;line-height:1}
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:'Inter',sans-serif}
+.btn-red{background:var(--red);color:#fff;width:100%;justify-content:center;padding:13px}
+.btn-gold{background:var(--gold);color:#fff;width:100%;justify-content:center;padding:13px}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--mid);padding:9px 16px}
+.btn-sm{padding:6px 13px;font-size:12px}
+.btn-x{background:transparent;border:none;font-size:18px;cursor:pointer;color:var(--muted);padding:4px;line-height:1}
 
-/* ── Forms ── */
-.form-group{margin-bottom:14px}
-.form-label{display:block;font-size:11px;font-weight:600;color:var(--mid);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
-.form-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--dark);background:var(--white);outline:none;font-family:'Inter',sans-serif;-webkit-appearance:none;appearance:none}
-.form-input:focus{border-color:var(--gold)}
-.form-select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--dark);background:var(--white);outline:none;-webkit-appearance:none;appearance:none;cursor:pointer}
-.form-textarea{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--dark);background:var(--white);outline:none;resize:vertical;font-family:'Inter',sans-serif;min-height:80px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* Forms */
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--mid);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.fi{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--dark);background:var(--white);outline:none;font-family:'Inter',sans-serif;-webkit-appearance:none}
+.fi:focus{border-color:var(--gold)}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fta{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--dark);background:var(--white);outline:none;resize:vertical;font-family:'Inter',sans-serif;min-height:72px}
 
-/* ── AI zone ── */
-.ai-zone{border:2px dashed var(--gold);border-radius:12px;padding:20px;text-align:center;background:var(--gold-l);cursor:pointer;margin-bottom:12px;transition:all .2s}
-.ai-zone-icon{font-size:28px;margin-bottom:6px}
-.ai-zone-title{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:3px}
-.ai-zone-sub{font-size:11px;color:var(--muted)}
-.ai-preview{width:80px;height:80px;object-fit:cover;border-radius:10px;margin-bottom:8px}
+/* Product card */
+.pc{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;gap:12px}
+.pi{width:54px;height:54px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.pinfo{flex:1;min-width:0}
+.pname{font-weight:600;font-size:14px;margin-bottom:2px}
+.pdesc{font-size:11px;color:var(--muted);margin-bottom:6px}
+.pprices{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.pchip{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600}
+.pbot{display:flex;align-items:center;justify-content:space-between;margin-top:4px}
 
-/* ── Product cards ── */
-.product-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:12px;display:flex;gap:12px;align-items:flex-start}
-.product-img{width:56px;height:56px;border-radius:10px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;object-fit:cover}
-.product-info{flex:1;min-width:0}
-.product-name{font-weight:600;font-size:14px;margin-bottom:3px}
-.product-desc{font-size:11px;color:var(--muted);margin-bottom:6px}
-.product-prices{display:flex;gap:8px;flex-wrap:wrap}
-.price-chip{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600}
-.product-actions{display:flex;gap:4px;margin-left:auto}
+/* Badge */
+.badge{display:inline-flex;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.b-hit{background:#FFF3CD;color:var(--red)}
+.b-active{background:var(--green-p);color:var(--green)}
+.b-archive{background:#F0F0F0;color:#888}
 
-/* ── Badge ── */
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-hit{background:#FFF3CD;color:var(--red)}
-.badge-active{background:var(--green-p);color:var(--green)}
-.badge-archive{background:#F0F0F0;color:#888}
+/* Purchase card */
+.prc{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.prc-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.prc-name{font-weight:600;font-size:14px}
+.prc-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.prc-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+.prc-row:last-child{border-bottom:none}
+.b-yes{background:var(--green-p);color:var(--green);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
+.b-no{background:var(--red-pale);color:var(--red);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
+.b-maybe{background:#FFF3CD;color:#E67E22;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
 
-/* ── Purchase rows ── */
-.purch-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
-.purch-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.purch-name{font-weight:600;font-size:14px}
-.purch-meta{font-size:11px;color:var(--muted);margin-top:2px}
-.purch-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
-.purch-row:last-child{border-bottom:none}
-.buy-yes{background:var(--green-p);color:var(--green);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
-.buy-no{background:var(--red-pale);color:var(--red);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
-.buy-maybe{background:#FFF3CD;color:#E67E22;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700}
-
-/* ── Finance ── */
-.fin-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
-.fin-row:last-child{border-bottom:none}
-.fin-label{font-size:13px;color:var(--mid)}
-.fin-input{width:120px;padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;text-align:right;outline:none;font-family:'Inter',sans-serif}
-.fin-input:focus{border-color:var(--gold)}
-.fin-total{background:var(--dark);border-radius:12px;padding:16px;display:flex;justify-content:space-between;align-items:center;margin-top:12px}
-.fin-total-label{font-size:12px;color:#999}
-.fin-total-value{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--gold)}
+/* Finance */
+.fr{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.fr:last-child{border-bottom:none}
+.fr-label{font-size:13px;color:var(--mid)}
+.fr-input{width:115px;padding:7px 9px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;text-align:right;outline:none;font-family:'Inter',sans-serif}
+.fr-input:focus{border-color:var(--gold)}
+.ftotal{background:var(--dark);border-radius:12px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+.ftotal-label{font-size:12px;color:#999}
+.ftotal-value{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--gold)}
 .profit-block{background:var(--dark);border-radius:14px;padding:20px;text-align:center;margin-top:14px}
 .profit-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
 .profit-value{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:700}
 
-/* ── Month tabs ── */
-.month-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;-webkit-overflow-scrolling:touch}
-.month-tabs::-webkit-scrollbar{display:none}
-.month-tab{flex-shrink:0;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);color:var(--mid);background:white;transition:all .15s}
-.month-tab.active{background:var(--dark);color:white;border-color:var(--dark)}
+/* Month tabs */
+.mtabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;-webkit-overflow-scrolling:touch}
+.mtabs::-webkit-scrollbar{display:none}
+.mt{flex-shrink:0;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);color:var(--mid);background:white}
+.mt.active{background:var(--dark);color:white;border-color:var(--dark)}
 
-/* ── Calc ── */
-.calc-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
-.calc-item-name{flex:1;font-size:13px}
-.calc-item-qty{width:50px;padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;text-align:center;outline:none}
-.calc-item-price{width:70px;padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;text-align:right;outline:none}
+/* Calc */
+.ci{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
 .calc-result{background:var(--dark);border-radius:14px;padding:20px;margin-top:14px}
-.calc-cost-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-.calc-cost-value{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:#fff;margin-bottom:16px}
-.price-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.price-opt{background:#252525;border-radius:10px;padding:12px 8px;text-align:center}
-.price-opt-label{font-size:10px;color:#888;margin-bottom:4px}
-.price-opt-price{font-size:16px;font-weight:700;color:var(--gold)}
-.price-opt-profit{font-size:10px;color:#555;margin-top:3px}
+.cr-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.cr-value{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:#fff;margin-bottom:16px}
+.popts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.popt{background:#252525;border-radius:10px;padding:13px 8px;text-align:center}
+.popt-label{font-size:10px;color:#888;margin-bottom:4px}
+.popt-price{font-size:17px;font-weight:700;color:var(--gold)}
+.popt-profit{font-size:10px;color:#555;margin-top:3px}
 
-/* ── Modal ── */
+/* AI zone */
+.ai-zone{border:2px dashed var(--gold);border-radius:12px;padding:20px;text-align:center;background:var(--gold-l);cursor:pointer;margin-bottom:12px}
+.ai-icon{font-size:28px;margin-bottom:6px}
+
+/* Modal */
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:flex;flex-direction:column;justify-content:flex-end}
-.modal{background:var(--white);border-radius:20px 20px 0 0;padding:20px 20px calc(20px + var(--safe-bottom));max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.modal{background:var(--white);border-radius:20px 20px 0 0;padding:20px 20px calc(20px + var(--safe-b));max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .modal-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
 .modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;margin-bottom:16px}
-.modal-actions{display:flex;gap:10px;margin-top:16px}
-.modal-actions .btn{flex:1;justify-content:center}
+.mact{display:flex;gap:10px;margin-top:16px}
+.mact .btn{flex:1;justify-content:center}
 
-/* ── Toast ── */
+/* Toast */
 .toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none}
 .toast.show{opacity:1}
 
-/* ── Empty ── */
+/* Empty */
 .empty{text-align:center;padding:40px 20px;color:var(--muted)}
 .empty-icon{font-size:36px;margin-bottom:10px}
-.empty-text{font-size:14px}
 
-/* ── Section divider ── */
-.section-divider{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:16px 0 10px;padding-left:2px}
+/* Loc chip */
+.loc-chip{background:var(--gold-l);border:1px solid var(--gold);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600;color:#8B6914}
 
-/* ── Spinner ── */
+/* Sync desktop */
+#sync-d{display:none;padding:14px 24px;font-size:11px;color:#666;border-top:1px solid #2a2a2a;margin-top:auto}
+
+/* Spinner */
 @keyframes spin{to{transform:rotate(360deg)}}
-.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+.spinner{width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+
+.sec-head{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px}
 </style>
 </head>
 <body>
 <div id="app">
   <div class="header">
     <div>
-      <div class="header-logo">miro</div>
-      <div class="header-sub">jewelry platform</div>
+      <div class="logo-title">miro</div>
+      <div class="logo-sub">jewelry platform</div>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-      <button class="header-action" id="header-add-btn" style="display:none">+ Добавить</button>
-      <span id="sync-status" style="font-size:10px;color:#8A8A8A">📱 Локально</span>
+    <div class="header-right">
+      <button class="header-btn" id="hbtn">+ Добавить</button>
+      <span id="sync-h">📱 Локально</span>
     </div>
   </div>
 
-  <div class="scroll" id="scroll-area">
-    <!-- pages injected here -->
-  </div>
+  <div class="scroll" id="scroll-area"></div>
 
-  <nav class="bottom-nav">
-    <div class="nav-item active" data-page="dashboard">
-      <span class="nav-icon">📊</span>
-      <span class="nav-label">Дашборд</span>
-    </div>
-    <div class="nav-item" data-page="catalog">
-      <span class="nav-icon">💎</span>
-      <span class="nav-label">Каталог</span>
-    </div>
-    <div class="nav-item" data-page="calc">
-      <span class="nav-icon">🧮</span>
-      <span class="nav-label">Калькулятор</span>
-    </div>
-    <div class="nav-item" data-page="purchases">
-      <span class="nav-icon">🛒</span>
-      <span class="nav-label">Закупки</span>
-    </div>
-    <div class="nav-item" data-page="finance">
-      <span class="nav-icon">💰</span>
-      <span class="nav-label">Финансы</span>
-    </div>
-    <div style="padding:16px 24px;margin-top:auto;border-top:1px solid #333">
-      <span id="sync-status-sidebar" style="font-size:11px;color:#666">📱 Локально</span>
-    </div>
+  <nav class="bnav" id="bnav">
+    <div class="ni active" data-page="dashboard"><span class="ni-icon">📊</span><span class="ni-label">Дашборд</span></div>
+    <div class="ni" data-page="catalog"><span class="ni-icon">💎</span><span class="ni-label">Каталог</span></div>
+    <div class="ni" data-page="calc"><span class="ni-icon">🧮</span><span class="ni-label">Калькулятор</span></div>
+    <div class="ni" data-page="purchases"><span class="ni-icon">🛒</span><span class="ni-label">Закупки</span></div>
+    <div class="ni" data-page="finance"><span class="ni-icon">💰</span><span class="ni-label">Финансы</span></div>
+    <div id="sync-d">📱 Локально</div>
   </nav>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-// ── Supabase config ───────────────────────────────────────────────────────────
-// ⚠️ ЗАМЕНИТЬ на свои значения из Supabase
-const SUPABASE_URL = 'https://fchbrrfllxdaajxywmgp.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjaGJycmZsbHhkYWFqeHl3bWdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzI3NjYsImV4cCI6MjEwMjY0ODc2Nn0.xwwhUKM-VVIq7pBy2eqILff-cqolax3jXzzV8tE2MeU';
+// ── Config ────────────────────────────────────────────────────────────────────
+const SB_URL = 'https://fchbrrfllxdaajxywmgp.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjaGJycmZsbHhkYWFqeHl3bWdwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNzI3NjYsImV4cCI6MjEwMjY0ODc2Nn0.xwwhUKM-VVIq7pBy2eqILff-cqolax3jXzzV8tE2MeU';
+const SK = 'miro_v10';
 
-let supabaseReady = false;
-let sb = null;
-
-async function initSupabase() {
-  if (SUPABASE_URL === 'YOUR_SUPABASE_URL') return; // не настроен
+// ── Supabase ──────────────────────────────────────────────────────────────────
+var sb = null;
+async function initSB() {
   try {
-    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
-    sb = createClient(SUPABASE_URL, SUPABASE_KEY);
-    supabaseReady = true;
-    showSyncStatus('connected');
-  } catch(e) {
-    console.warn('Supabase не подключен, работаем локально');
-  }
+    var m = await import('https://esm.sh/@supabase/supabase-js@2');
+    sb = m.createClient(SB_URL, SB_KEY);
+    sync('connected');
+  } catch(e) { console.warn('SB init failed', e); }
 }
-
-async function loadFromCloud() {
-  if (!supabaseReady || !sb) return null;
+async function loadCloud() {
+  if (!sb) return null;
   try {
-    const { data, error } = await sb.from('miro_state').select('*').eq('id', 1).single();
-    if (error || !data) return null;
-    showSyncStatus('synced');
-    return JSON.parse(data.state_json);
-  } catch(e) { return null; }
-}
-
-async function saveToCloud(state) {
-  if (!supabaseReady || !sb) return;
-  try {
-    showSyncStatus('saving');
-    const json = JSON.stringify(state);
-    await sb.from('miro_state').upsert({ id: 1, state_json: json, updated_at: new Date().toISOString() });
-    showSyncStatus('synced');
-  } catch(e) {
-    showSyncStatus('error');
-  }
-}
-
-let saveTimer = null;
-function scheduleSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
-    saveData();
-    saveToCloud(STATE);
-  }, 1000);
-}
-
-function showSyncStatus(status) {
-  const map = {
-    connected: { text: '☁️ Подключено', color: '#27AE60' },
-    synced:    { text: '✓ Сохранено', color: '#27AE60' },
-    saving:    { text: '⟳ Сохраняю...', color: '#C9A96E' },
-    error:     { text: '⚠️ Ошибка', color: '#C0392B' },
-    local:     { text: '📱 Локально', color: '#8A8A8A' },
-  };
-  const s = map[status] || map.local;
-  ['sync-status','sync-status-sidebar'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el){ el.textContent = s.text; el.style.color = s.color; }
-  });
-}
-
-// ── Data ──────────────────────────────────────────────────────────────────────
-const STORAGE_KEY = 'miro_data_v7';
-
-function loadData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    var r = await sb.from('miro_state').select('state_json').eq('id',1).single();
+    if (r.data && r.data.state_json) { sync('synced'); return JSON.parse(r.data.state_json); }
   } catch(e) {}
   return null;
 }
-
-function saveData() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE)); } catch(e) {}
+var saveTimer = null;
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    localStorage.setItem(SK, JSON.stringify(S));
+    if (sb) {
+      sync('saving');
+      sb.from('miro_state').upsert({id:1, state_json:JSON.stringify(S), updated_at:new Date().toISOString()})
+        .then(function(){ sync('synced'); }).catch(function(){ sync('error'); });
+    }
+  }, 800);
+}
+function sync(s) {
+  var m = {connected:'☁️ Подключено',synced:'✓ Сохранено',saving:'⟳ Сохраняю...',error:'⚠️ Ошибка',local:'📱 Локально'};
+  var c = {connected:'#27AE60',synced:'#27AE60',saving:'#C9A96E',error:'#C0392B',local:'#888'};
+  var t = m[s]||m.local, cl = c[s]||c.local;
+  ['sync-h','sync-d'].forEach(function(id){ var e=document.getElementById(id); if(e){e.textContent=t;e.style.color=cl;} });
 }
 
-const MONTHS = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+// ── State ─────────────────────────────────────────────────────────────────────
+var MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
 
-const DEFAULT_STATE = {
+function makeFinance() {
+  return MONTHS.map(function(m,i) {
+    return {month:m,
+      incomeIG:i===7?14500:0, incomeAbout:i===7?3200:0, incomeOther:0,
+      expSalary:i===7?2000:0, expTeam:i===7?1000:0,
+      expMaterials:i===7?3200:0, expFurniture:i===7?800:0, expPackaging:i===7?400:0, expDeliveryIn:i===7?200:0,
+      expAds:i===7?1500:0, expSmm:i===7?500:0, expPhoto:i===7?500:0, expStudio:0,
+      expDeliveryOut:i===7?300:0, expOther:0};
+  });
+}
+
+var DEFAULT = {
+  currentPage: 'dashboard',
+  activeMonth: 7,
   products: [
-    {id:1, name:"Браслет красный с сердечками", desc:"Гематит, ювелирная сталь", material:"Гематит", price1:470, comp2:"Браслет + чокер", price2:850, comp3:"", price3:0, status:"Хит", img:"❤️", cost:150, locations:["Instagram","Кафе About"], locationStock:[{loc:"Instagram",qty:2},{loc:"Кафе About",qty:1}]},
-    {id:2, name:"Чокер кристалл розовый", desc:"Ювелирный кристалл, гипоаллергенный сплав", material:"Кристалл", price1:790, comp2:"Чокер + серьги", price2:1250, comp3:"Чокер + серьги + браслет", price3:1490, status:"Активный", img:"🌸", cost:220, locations:["Instagram"], locationStock:[{loc:"Instagram",qty:2}]},
-    {id:3, name:"Колье из розового кварца", desc:"Натуральный розовый кварц", material:"Кварц", price1:1790, comp2:"Колье + браслет", price2:2499, comp3:"", price3:0, status:"Активный", img:"🩷", cost:480, locations:["Шоурум"], locationStock:[{loc:"Шоурум",qty:1}]},
+    {id:1,name:'Браслет красный с сердечками',desc:'Гематит, ювелирная сталь',material:'Гематит',price1:470,comp2:'Браслет + чокер',price2:850,comp3:'',price3:0,status:'Хит',img:'❤️',cost:150,locationStock:[{loc:'Instagram',qty:2},{loc:'Кафе About',qty:1}]},
+    {id:2,name:'Чокер кристалл розовый',desc:'Ювелирный кристалл',material:'Кристалл',price1:790,comp2:'Чокер + серьги',price2:1250,comp3:'',price3:0,status:'Активный',img:'🌸',cost:220,locationStock:[{loc:'Instagram',qty:2}]},
+    {id:3,name:'Колье из розового кварца',desc:'Натуральный розовый кварц',material:'Кварц',price1:1790,comp2:'Колье + браслет',price2:2499,comp3:'',price3:0,status:'Активный',img:'🩷',cost:480,locationStock:[{loc:'Шоурум',qty:1}]},
   ],
   purchases: [
-    {id:1, name:"Тросик ювелирный серебро", supplier:"AliExpress", date:"15.07.2026", amount:80, qty:40, unit:"м", quality:5, buyMore:"ДА", comment:"Отличное качество, не ржавеет"},
-    {id:2, name:"Жемчуг белый 6мм", supplier:"Бусинка (Киев)", date:"20.07.2026", amount:150, qty:50, unit:"шт", quality:4, buyMore:"ДА", comment:"Хороший, размер чуть разный"},
-    {id:3, name:"Гематит шарик 4мм", supplier:"AliExpress", date:"20.07.2026", amount:90, qty:80, unit:"шт", quality:5, buyMore:"ДА", comment:"Идеально, ровные, блестящие"},
+    {id:1,name:'Тросик ювелирный серебро',supplier:'AliExpress',date:'15.07.2026',amount:80,qty:40,unit:'м',quality:5,buyMore:'ДА',comment:'Отличное качество',link:''},
+    {id:2,name:'Жемчуг белый 6мм',supplier:'Бусинка (Киев)',date:'20.07.2026',amount:150,qty:50,unit:'шт',quality:4,buyMore:'ДА',comment:'Хороший, размер чуть разный',link:''},
+    {id:3,name:'Гематит шарик 4мм',supplier:'AliExpress',date:'20.07.2026',amount:90,qty:80,unit:'шт',quality:5,buyMore:'ДА',comment:'Идеально, ровные',link:''},
   ],
-  finance: MONTHS.map((m,i)=>({
-    month:m,
-    incomeIG: i===7?14500:0, incomeAbout: i===7?3200:0, incomeOther:0,
-    expSalary: i===7?2000:0, expTeam: i===7?1000:0,
-    expMaterials: i===7?3200:0, expFurniture: i===7?800:0, expPackaging: i===7?400:0, expDeliveryIn: i===7?200:0,
-    expAds: i===7?1500:0, expSmm: i===7?500:0, expPhoto: i===7?500:0, expStudio:0,
-    expDeliveryOut: i===7?300:0,
-    expOther:0,
-  })),
-  calcItems: [
-    {name:"Тросик ювелирный", qty:1, price:2},
-    {name:"Замок карабин", qty:1, price:6},
-    {name:"Коробочка", qty:1, price:25},
-  ],
-  activeMonth: 7,
-  currentPage: "dashboard",
+  finance: makeFinance(),
+  calcItems: [{name:'Тросик ювелирный',qty:1,price:2},{name:'Замок карабин',qty:1,price:6},{name:'Коробочка',qty:1,price:25}],
 };
 
-let STATE = loadData() || JSON.parse(JSON.stringify(DEFAULT_STATE));
-// Validate and repair STATE
-const validPages = ['dashboard','catalog','calc','purchases','finance'];
-if (!validPages.includes(STATE.currentPage)) STATE.currentPage = 'dashboard';
-if (!STATE.finance || !Array.isArray(STATE.finance) || STATE.finance.length < 12) STATE.finance = JSON.parse(JSON.stringify(DEFAULT_STATE.finance));
-if (STATE.activeMonth === undefined || STATE.activeMonth < 0 || STATE.activeMonth > 11) STATE.activeMonth = 7;
-if (!STATE.products || !Array.isArray(STATE.products)) STATE.products = [];
-if (!STATE.purchases || !Array.isArray(STATE.purchases)) STATE.purchases = [];
-if (!STATE.calcItems || !Array.isArray(STATE.calcItems)) STATE.calcItems = JSON.parse(JSON.stringify(DEFAULT_STATE.calcItems));
+function loadLocal() {
+  try { var r = localStorage.getItem(SK); if(r) return JSON.parse(r); } catch(e){}
+  return null;
+}
+
+function validateState(s) {
+  if (!s || typeof s !== 'object') return JSON.parse(JSON.stringify(DEFAULT));
+  if (!Array.isArray(s.products)) s.products = [];
+  if (!Array.isArray(s.purchases)) s.purchases = [];
+  if (!Array.isArray(s.finance) || s.finance.length < 12) s.finance = makeFinance();
+  if (!Array.isArray(s.calcItems)) s.calcItems = JSON.parse(JSON.stringify(DEFAULT.calcItems));
+  if (typeof s.activeMonth !== 'number' || s.activeMonth < 0 || s.activeMonth > 11) s.activeMonth = 7;
+  var pages = ['dashboard','catalog','calc','purchases','finance'];
+  if (pages.indexOf(s.currentPage) === -1) s.currentPage = 'dashboard';
+  // ensure each finance month has all fields
+  s.finance = s.finance.map(function(fm, i) {
+    var def = DEFAULT.finance[i] || {};
+    return Object.assign({}, def, fm || {});
+  });
+  return s;
+}
+
+var S = validateState(loadLocal() || JSON.parse(JSON.stringify(DEFAULT)));
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function fmt(n) { return n ? Number(n).toLocaleString('ru') + ' грн' : '—'; }
-function fmtN(n) { return n ? Number(n).toLocaleString('ru') : '0'; }
+function fmtN(n) { return Number(n||0).toLocaleString('ru'); }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2000);
 }
 
 function render() {
-  const scrollArea = document.getElementById('scroll-area');
-  if (!scrollArea) { setTimeout(render, 100); return; }
-  saveData();
-
-  // Validate page
-  const validPages = ['dashboard','catalog','calc','purchases','finance'];
-  if (!validPages.includes(STATE.currentPage)) STATE.currentPage = 'dashboard';
-
-  // Render page content
+  var area = document.getElementById('scroll-area');
+  if (!area) return;
   var html = '';
   try {
-    if (STATE.currentPage === 'dashboard') html = renderDashboard();
-    else if (STATE.currentPage === 'catalog') html = renderCatalog();
-    else if (STATE.currentPage === 'calc') html = renderCalc();
-    else if (STATE.currentPage === 'purchases') html = renderPurchases();
-    else if (STATE.currentPage === 'finance') html = renderFinance();
-    scrollArea.innerHTML = html;
+    if (S.currentPage === 'dashboard') html = pageDashboard();
+    else if (S.currentPage === 'catalog') html = pageCatalog();
+    else if (S.currentPage === 'calc') html = pageCalc();
+    else if (S.currentPage === 'purchases') html = pagePurchases();
+    else if (S.currentPage === 'finance') html = pageFinance();
+    else { S.currentPage = 'dashboard'; html = pageDashboard(); }
   } catch(e) {
-    console.error('Render error:', e);
-    scrollArea.innerHTML = '<div style="padding:20px;color:red;font-size:13px"><b>Ошибка:</b> ' + e.message + '</div>';
+    html = '<div style="padding:20px;color:red;font-size:13px"><b>Ошибка рендера:</b> ' + esc(e.message) + '</div>';
+    console.error(e);
   }
+  area.innerHTML = html;
 
-  // Update nav
-  document.querySelectorAll('.nav-item').forEach(function(el) {
-    el.classList.toggle('active', el.dataset.page === STATE.currentPage);
+  // Nav active state
+  document.querySelectorAll('.ni').forEach(function(el) {
+    el.classList.toggle('active', el.getAttribute('data-page') === S.currentPage);
   });
 
-  // Header add button (mobile only)
-  var addBtn = document.getElementById('header-add-btn');
-  if (addBtn) {
-    if (STATE.currentPage === 'catalog' || STATE.currentPage === 'purchases') {
-      addBtn.style.display = 'block';
-      addBtn.onclick = STATE.currentPage === 'catalog' ? openProductModal : openPurchaseModal;
+  // Mobile header button
+  var hbtn = document.getElementById('hbtn');
+  if (hbtn) {
+    if (S.currentPage === 'catalog' || S.currentPage === 'purchases') {
+      hbtn.style.display = 'block';
+      hbtn.onclick = S.currentPage === 'catalog' ? openProductModal : openPurchaseModal;
     } else {
-      addBtn.style.display = 'none';
+      hbtn.style.display = 'none';
     }
   }
-
-  attachListeners();
 }
 
-// ── Dashboard ─────────────────────────────────────────────────────────────────
-function renderDashboard() {
-  if (!STATE.finance || !STATE.finance[STATE.activeMonth]) {
-    STATE.finance = JSON.parse(JSON.stringify(DEFAULT_STATE.finance));
-    STATE.activeMonth = 7;
-  }
-  const fm = STATE.finance[STATE.activeMonth] || {};
-  const income = (fm.incomeIG||0)+(fm.incomeAbout||0)+(fm.incomeOther||0);
-  const exp = (fm.expMaterials||0)+(fm.expFurniture||0)+(fm.expPackaging||0)+(fm.expDeliveryIn||0)+(fm.expAds||0)+(fm.expPhoto||0)+(fm.expStudio||0)+(fm.expSmm||0)+(fm.expDeliveryOut||0)+(fm.expOther||0)+(fm.expSalary||0)+(fm.expTeam||0);
-  const profit = income - exp;
-  const yearIncome = STATE.finance.reduce((s,m)=>s+(m.incomeIG||0)+(m.incomeAbout||0)+(m.incomeOther||0),0);
-  const yearExp = STATE.finance.reduce((s,m)=>s+(m.expMaterials||0)+(m.expFurniture||0)+(m.expPackaging||0)+(m.expDeliveryIn||0)+(m.expAds||0)+(m.expPhoto||0)+(m.expStudio||0)+(m.expSmm||0)+(m.expDeliveryOut||0)+(m.expOther||0)+(m.expSalary||0)+(m.expTeam||0),0);
-
-  const hits = STATE.products.filter(p=>p.status==='Хит').map(p=>`
-    <div class="fin-row">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div class="product-img" style="width:40px;height:40px;font-size:20px">${p.img}</div>
-        <div><div style="font-weight:600;font-size:13px">${p.name}</div><div style="font-size:11px;color:var(--muted)">${p.material}</div></div>
-      </div>
-      <div style="font-weight:700;font-size:13px">${fmt(p.price1)}</div>
-    </div>`).join('') || '<div style="font-size:13px;color:var(--muted)">Нет хитов</div>';
-
-  return `
-    <div style="padding-top:4px">
-      <div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Добро пожаловать 🤍</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Miro Jewelry — внутренняя платформа</div>
-
-      <div class="stats-grid">
-        <div class="stat">
-          <div class="stat-label">Товаров</div>
-          <div class="stat-value">${STATE.products.length}</div>
-          <div class="stat-sub">актив: ${STATE.products.filter(p=>p.status!=='Архив').length}</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Доход мес.</div>
-          <div class="stat-value" style="color:var(--green)">${fmtN(income)}</div>
-          <div class="stat-sub">грн</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Расходы мес.</div>
-          <div class="stat-value" style="color:var(--red)">${fmtN(exp)}</div>
-          <div class="stat-sub">грн</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Прибыль мес.</div>
-          <div class="stat-value" style="color:${profit>=0?'var(--green)':'var(--red)'}">${fmtN(profit)}</div>
-          <div class="stat-sub" style="color:${profit>=0?'var(--green)':'var(--red)'}">${profit>=0?'▲ в плюсе':'▼ в минусе'}</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">🔥 Хиты продаж</div>
-        ${hits}
-      </div>
-
-      <div class="card">
-        <div class="card-title">📅 Итоги года</div>
-        <div class="fin-row"><span class="fin-label">Доход за год</span><span style="font-weight:700;color:var(--green)">${fmt(yearIncome)}</span></div>
-        <div class="fin-row"><span class="fin-label">Расходы за год</span><span style="font-weight:700;color:var(--red)">${fmt(yearExp)}</span></div>
-        <div class="fin-total">
-          <span class="fin-total-label">Прибыль за год</span>
-          <span class="fin-total-value" style="color:${(yearIncome-yearExp)>=0?'var(--gold)':'#E74C3C'}">${fmtN(yearIncome-yearExp)} грн</span>
-        </div>
-      </div>
-    </div>`;
+function navigate(page) {
+  S.currentPage = page;
+  render();
+  var area = document.getElementById('scroll-area');
+  if (area) area.scrollTop = 0;
 }
 
-// ── Location stock helper ────────────────────────────────────────────────────
-function renderLocStock(locationStock) {
-  if (!locationStock || !locationStock.length) return '';
-  var rows = locationStock.map(function(l) {
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0">' +
-      '<span style="background:#F5EDD8;border:1px solid #C9A96E;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:600;color:#8B6914">📍 ' + l.loc + '</span>' +
-      '<span style="font-size:12px;font-weight:600;color:#4A4A4A">' + l.qty + ' шт</span>' +
-      '</div>';
-  }).join('');
-  return '<div style="margin-top:8px;padding-top:8px;border-top:1px solid #E8E0D8;display:flex;flex-direction:column;gap:2px">' + rows + '</div>';
-}
-
-// ── Catalog ───────────────────────────────────────────────────────────────────
-function renderCatalog() {
-  const cards = STATE.products.map(function(p) {
-    var badgeClass = p.status==='Хит'?'badge-hit':p.status==='Архив'?'badge-archive':'badge-active';
-    var badgeText = p.status==='Хит'?'🔥 Хит':p.status;
-    var totalQty = (p.locationStock||[]).reduce(function(s,l){return s+l.qty;},0) || p.stock || 0;
-    var priceChips = '<span class="price-chip">'+fmt(p.price1)+'</span>';
-    if(p.comp2) priceChips += '<span class="price-chip" style="font-size:10px">'+p.comp2+': '+fmt(p.price2)+'</span>';
-    if(p.comp3) priceChips += '<span class="price-chip" style="font-size:10px">'+p.comp3+': '+fmt(p.price3)+'</span>';
-    var locHtml = renderLocStock(p.locationStock);
-    return '<div class="product-card">' +
-      '<div class="product-img">'+p.img+'</div>' +
-      '<div class="product-info">' +
-        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">' +
-          '<div class="product-name">'+p.name+'</div>' +
-          '<div style="display:flex;gap:4px;flex-shrink:0">' +
-            '<button class="btn-ghost" onclick="editProduct('+p.id+')">✏️</button>' +
-            '<button class="btn-ghost" onclick="deleteProduct('+p.id+')">🗑️</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="product-desc">'+p.desc+'</div>' +
-        '<div class="product-prices">'+priceChips+'</div>' +
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">' +
-          '<span class="badge '+badgeClass+'">'+badgeText+'</span>' +
-          '<span style="font-size:11px;color:var(--muted)">Всего: '+totalQty+' шт</span>' +
-        '</div>' +
-        locHtml +
-      '</div>' +
-    '</div>';
-  }).join('');
-
-  return `
-    <div>
-      <div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Каталог</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Украшения, цены и комплекты</div>
-
-      <div class="card" style="border:2px dashed var(--gold);background:var(--gold-l)">
-        <div class="card-title" style="color:var(--gold)">✨ Добавить через AI</div>
-        <div class="ai-zone" onclick="document.getElementById('ai-img-input').click()">
-          <img id="ai-preview-img" class="ai-preview" style="display:none"/>
-          <div class="ai-zone-icon" id="ai-zone-icon">📷</div>
-          <div class="ai-zone-title">Загрузи фото украшения</div>
-          <div class="ai-zone-sub">AI заполнит карточку автоматически</div>
-        </div>
-        <input type="file" id="ai-img-input" accept="image/*" style="display:none" onchange="handleAiImage(this)"/>
-        <textarea class="form-textarea" id="ai-text" placeholder="Вставь описание, цену, размер, материал…" style="margin-bottom:10px"></textarea>
-        <button class="btn btn-gold" id="ai-fill-btn" onclick="handleAiFill()">✨ Заполнить карточку через AI</button>
-      </div>
-
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div class="section-divider" style="margin:0">Все товары (${STATE.products.length})</div>
-        <button class="btn btn-outline btn-sm" onclick="openProductModal()">+ Вручную</button>
-      </div>
-
-      ${STATE.products.length ? cards : '<div class="empty"><div class="empty-icon">💎</div><div class="empty-text">Добавь первый товар</div></div>'}
-    </div>`;
-}
-
-// ── Calc ──────────────────────────────────────────────────────────────────────
-function renderCalc() {
-  const items = STATE.calcItems.map((item, i) => `
-    <div class="calc-item">
-      <input class="form-input" style="flex:1;padding:8px 10px;font-size:13px" value="${item.name}" oninput="updateCalcItem(${i},'name',this.value)" placeholder="Материал"/>
-      <input class="calc-item-qty" type="number" value="${item.qty}" oninput="updateCalcItem(${i},'qty',this.value)" placeholder="Кол"/>
-      <input class="calc-item-price" type="number" value="${item.price}" oninput="updateCalcItem(${i},'price',this.value)" placeholder="Цена"/>
-      <button class="btn-ghost" onclick="removeCalcItem(${i})" style="color:var(--red)">✕</button>
-    </div>`).join('');
-
-  const cost = STATE.calcItems.reduce((s,i)=>s+(+i.qty * +i.price),0);
-
-  return `
-    <div>
-      <div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Калькулятор</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Себестоимость украшения</div>
-
-      <div class="card">
-        <div class="card-title">Материалы и упаковка</div>
-        ${items}
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <input class="form-input" id="new-item-name" placeholder="Материал" style="flex:2;padding:10px 12px;font-size:13px"/>
-          <input class="form-input" id="new-item-qty" type="number" placeholder="Кол" style="width:60px;padding:10px 8px;font-size:13px"/>
-          <input class="form-input" id="new-item-price" type="number" placeholder="₴" style="width:70px;padding:10px 8px;font-size:13px"/>
-          <button class="btn btn-outline btn-sm" onclick="addCalcItem()" style="flex-shrink:0">+</button>
-        </div>
-      </div>
-
-      <div class="calc-result">
-        <div class="calc-cost-label">Себестоимость</div>
-        <div class="calc-cost-value">${cost.toFixed(0)} грн</div>
-        <div class="price-opts">
-          ${[[3,'Мин'],[4,'Комфорт'],[5,'Премиум']].map(([m,l])=>`
-            <div class="price-opt">
-              <div class="price-opt-label">×${m} ${l}</div>
-              <div class="price-opt-price">${(cost*m).toFixed(0)} ₴</div>
-              <div class="price-opt-profit">прибыль ${(cost*(m-1)).toFixed(0)} ₴</div>
-            </div>`).join('')}
-        </div>
-      </div>
-    </div>`;
-}
-
-// ── Purchases ─────────────────────────────────────────────────────────────────
-function renderPurchases() {
-  // Group by buyMore for supplier overview
-  const goodSuppliers = [...new Set(STATE.purchases.filter(p=>p.buyMore==='ДА'&&p.supplier).map(p=>p.supplier))];
-  const badSuppliers = [...new Set(STATE.purchases.filter(p=>p.buyMore==='НЕТ'&&p.supplier).map(p=>p.supplier))];
-
-  const cards = STATE.purchases.map(p => {
-    const buyClass = p.buyMore==='ДА'?'buy-yes':p.buyMore==='НЕТ'?'buy-no':'buy-maybe';
-    const buyText = p.buyMore==='ДА'?'✅ ДА':p.buyMore==='НЕТ'?'❌ НЕТ':'🤔 Попробовать';
-    const stars = '⭐'.repeat(p.quality);
-    const linkHtml = p.link ? `<a href="${p.link}" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--gold);font-weight:600;text-decoration:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">🔗 Ссылка на поставщика</a>` : '';
-    return `
-      <div class="purch-card">
-        <div class="purch-header">
-          <div>
-            <div class="purch-name">${p.name}</div>
-            <div class="purch-meta">${p.supplier||'—'} · ${p.date||'—'}</div>
-          </div>
-          <button class="btn-ghost" onclick="deletePurchase(${p.id})" style="color:var(--red)">🗑️</button>
-        </div>
-        <div class="purch-row"><span style="color:var(--muted)">Сумма</span><span style="font-weight:700">${fmt(p.amount)}</span></div>
-        <div class="purch-row"><span style="color:var(--muted)">Объём</span><span>${p.qty} ${p.unit}</span></div>
-        <div class="purch-row"><span style="color:var(--muted)">Качество</span><span>${stars}</span></div>
-        <div class="purch-row"><span style="color:var(--muted)">Брать ещё?</span><span class="${buyClass}">${buyText}</span></div>
-        ${p.comment?`<div style="font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">${p.comment}</div>`:''}
-        ${linkHtml}
-      </div>`;
-  }).join('');
-
-  const total = STATE.purchases.reduce((s,p)=>s+p.amount,0);
-
-  const suppliersBlock = (goodSuppliers.length || badSuppliers.length) ? `
-    <div class="card" style="margin-bottom:14px">
-      <div class="card-title">📋 Поставщики</div>
-      ${goodSuppliers.length ? `
-        <div style="margin-bottom:10px">
-          <div style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">✅ Рекомендую</div>
-          ${goodSuppliers.map(s=>`<div style="font-size:13px;padding:4px 0;color:var(--dark)">${s}</div>`).join('')}
-        </div>` : ''}
-      ${badSuppliers.length ? `
-        <div>
-          <div style="font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">❌ Не рекомендую</div>
-          ${badSuppliers.map(s=>`<div style="font-size:13px;padding:4px 0;color:var(--dark)">${s}</div>`).join('')}
-        </div>` : ''}
-    </div>` : '';
-
-  return `
-    <div>
-      <div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Закупки</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Материалы и контроль качества</div>
-      ${suppliersBlock}
-      <div class="section-divider">Все закупки (${STATE.purchases.length})</div>
-      ${STATE.purchases.length ? cards : '<div class="empty"><div class="empty-icon">🛒</div><div class="empty-text">Нет закупок</div></div>'}
-      ${STATE.purchases.length ? `
-        <div class="fin-total" style="margin-top:4px">
-          <span class="fin-total-label">Итого на закупки</span>
-          <span class="fin-total-value">${fmtN(total)} грн</span>
-        </div>` : ''}
-    </div>`;
-}
-
-// ── Finance ───────────────────────────────────────────────────────────────────
-function renderFinance() {
-  if (!STATE.finance || !STATE.finance[STATE.activeMonth]) {
-    STATE.finance = JSON.parse(JSON.stringify(DEFAULT_STATE.finance));
-    STATE.activeMonth = 7;
-  }
-  const fm = STATE.finance[STATE.activeMonth] || {};
-  const income = (fm.incomeIG||0)+(fm.incomeAbout||0)+(fm.incomeOther||0);
-
-  // Expense categories grouped
-  const expGroups = [
-    { label:'👥 Команда / ЗП', color:'#8E44AD', fields:[
-      ['expSalary','Зарплата (своя)'],
-      ['expTeam','Команда / фрилансеры'],
-    ]},
-    { label:'📦 Производство', color:'#2980B9', fields:[
-      ['expMaterials','Материалы'],
-      ['expFurniture','Фурнитура'],
-      ['expPackaging','Упаковка'],
-      ['expDeliveryIn','Доставка материалов'],
-    ]},
-    { label:'📣 Маркетинг', color:'#E67E22', fields:[
-      ['expAds','Реклама / трафик'],
-      ['expSmm','SMM'],
-      ['expPhoto','Фотограф / съёмка'],
-      ['expStudio','Аренда студии'],
-    ]},
-    { label:'🚚 Доставка клиентам', color:'#27AE60', fields:[
-      ['expDeliveryOut','Доставка клиентам'],
-    ]},
-    { label:'📋 Прочее', color:'#7F8C8D', fields:[
-      ['expOther','Прочие расходы'],
-    ]},
-  ];
-
-  const allExpFields = expGroups.flatMap(g=>g.fields.map(f=>f[0]));
-  const exp = allExpFields.reduce((s,k)=>s+(fm[k]||0),0);
-  const profit = income - exp;
-
-  const tabs = MONTHS.map((m,i)=>`<button class="month-tab ${i===STATE.activeMonth?'active':''}" onclick="setMonth(${i})">${m.slice(0,3)}</button>`).join('');
-
-  const incRows = [['incomeIG','Instagram'],['incomeAbout','Кафе About'],['incomeOther','Другие']].map(([k,l])=>`
-    <div class="fin-row">
-      <span class="fin-label">${l}</span>
-      <input class="fin-input" type="number" value="${fm[k]||''}" oninput="setFinance('${k}',this.value)" placeholder="0"/>
-    </div>`).join('');
-
-  const expGroupsHtml = expGroups.map(g => {
-    const groupTotal = g.fields.reduce((s,[k])=>s+(fm[k]||0),0);
-    const rows = g.fields.map(([k,l])=>`
-      <div class="fin-row" style="padding-left:10px">
-        <span class="fin-label" style="font-size:12px">${l}</span>
-        <input class="fin-input" type="number" value="${fm[k]||''}" oninput="setFinance('${k}',this.value)" placeholder="0"/>
-      </div>`).join('');
-    return `
-      <div style="margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:2px solid ${g.color}22;margin-bottom:4px">
-          <span style="font-size:12px;font-weight:700;color:${g.color}">${g.label}</span>
-          <span style="font-size:12px;font-weight:700;color:${g.color}">${groupTotal?fmtN(groupTotal)+' грн':''}</span>
-        </div>
-        ${rows}
-      </div>`;
-  }).join('');
-
-  return `
-    <div>
-      <div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Финансы</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:16px">Доходы и расходы</div>
-
-      <div class="month-tabs">${tabs}</div>
-
-      <div class="card">
-        <div class="card-title">💚 Доходы</div>
-        ${incRows}
-        <div class="fin-total">
-          <span class="fin-total-label">Итого доход</span>
-          <span class="fin-total-value" style="color:var(--gold)">${fmtN(income)} грн</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">🔴 Расходы по статьям</div>
-        ${expGroupsHtml}
-        <div class="fin-total">
-          <span class="fin-total-label">Итого расходы</span>
-          <span class="fin-total-value" style="color:#E74C3C">${fmtN(exp)} грн</span>
-        </div>
-      </div>
-
-      <div class="profit-block">
-        <div class="profit-label">Чистая прибыль — ${MONTHS[STATE.activeMonth]}</div>
-        <div class="profit-value" style="color:${profit>=0?'var(--gold)':'#E74C3C'}">${fmtN(profit)} грн</div>
-      </div>
-    </div>`;
-}
-
-// ── Listeners ─────────────────────────────────────────────────────────────────
-function attachListeners() {}
-
-// ── Navigation ────────────────────────────────────────────────────────────────
-document.querySelectorAll('.nav-item').forEach(el => {
-  el.addEventListener('click', () => {
-    STATE.currentPage = el.dataset.page;
-    render();
-    document.getElementById('scroll-area').scrollTop = 0;
-  });
+document.getElementById('bnav').addEventListener('click', function(e) {
+  var ni = e.target.closest('.ni');
+  if (ni && ni.getAttribute('data-page')) navigate(ni.getAttribute('data-page'));
 });
 
-// ── Finance actions ───────────────────────────────────────────────────────────
-window.setMonth = function(i) { STATE.activeMonth = i; render(); }
-window.setFinance = function(key, val) {
-  STATE.finance[STATE.activeMonth][key] = +val || 0;
-  scheduleSave();
+// ── Pages ─────────────────────────────────────────────────────────────────────
+
+function pageDashboard() {
+  var fm = S.finance[S.activeMonth] || {};
+  var inc = (fm.incomeIG||0)+(fm.incomeAbout||0)+(fm.incomeOther||0);
+  var exp = (fm.expSalary||0)+(fm.expTeam||0)+(fm.expMaterials||0)+(fm.expFurniture||0)+(fm.expPackaging||0)+(fm.expDeliveryIn||0)+(fm.expAds||0)+(fm.expSmm||0)+(fm.expPhoto||0)+(fm.expStudio||0)+(fm.expDeliveryOut||0)+(fm.expOther||0);
+  var profit = inc - exp;
+  var yInc = S.finance.reduce(function(s,m){ return s+(m.incomeIG||0)+(m.incomeAbout||0)+(m.incomeOther||0); },0);
+  var yExp = S.finance.reduce(function(s,m){ return s+(m.expSalary||0)+(m.expTeam||0)+(m.expMaterials||0)+(m.expFurniture||0)+(m.expPackaging||0)+(m.expDeliveryIn||0)+(m.expAds||0)+(m.expSmm||0)+(m.expPhoto||0)+(m.expStudio||0)+(m.expDeliveryOut||0)+(m.expOther||0); },0);
+  var hits = S.products.filter(function(p){ return p.status==='Хит'; }).map(function(p){
+    return '<div class="fr"><div style="display:flex;align-items:center;gap:10px"><div class="pi" style="width:38px;height:38px;font-size:20px">'+esc(p.img)+'</div><div><div style="font-weight:600;font-size:13px">'+esc(p.name)+'</div><div style="font-size:11px;color:var(--muted)">'+esc(p.material||'')+'</div></div></div><div style="font-weight:700;font-size:13px">'+fmt(p.price1)+'</div></div>';
+  }).join('') || '<div style="font-size:13px;color:var(--muted)">Нет хитов</div>';
+
+  return '<div style="padding-top:4px">'
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Добро пожаловать 🤍</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:16px">Miro Jewelry — внутренняя платформа</div>'
+    +'<div class="stats-grid">'
+    +'<div class="stat"><div class="stat-label">Товаров</div><div class="stat-value">'+S.products.length+'</div><div class="stat-sub">актив: '+S.products.filter(function(p){return p.status!=='Архив';}).length+'</div></div>'
+    +'<div class="stat"><div class="stat-label">Доход мес.</div><div class="stat-value" style="color:var(--green)">'+fmtN(inc)+'</div><div class="stat-sub">грн</div></div>'
+    +'<div class="stat"><div class="stat-label">Расходы мес.</div><div class="stat-value" style="color:var(--red)">'+fmtN(exp)+'</div><div class="stat-sub">грн</div></div>'
+    +'<div class="stat"><div class="stat-label">Прибыль мес.</div><div class="stat-value" style="color:'+(profit>=0?'var(--green)':'var(--red)')+'">'+fmtN(profit)+'</div><div class="stat-sub" style="color:'+(profit>=0?'var(--green)':'var(--red)')+'">'+(profit>=0?'▲ в плюсе':'▼ в минусе')+'</div></div>'
+    +'</div>'
+    +'<div class="card"><div class="card-title">🔥 Хиты продаж</div>'+hits+'</div>'
+    +'<div class="card"><div class="card-title">📅 Итоги года</div>'
+    +'<div class="fr"><span class="fr-label">Доход за год</span><span style="font-weight:700;color:var(--green)">'+fmt(yInc)+'</span></div>'
+    +'<div class="fr"><span class="fr-label">Расходы за год</span><span style="font-weight:700;color:var(--red)">'+fmt(yExp)+'</span></div>'
+    +'<div class="ftotal"><span class="ftotal-label">Прибыль за год</span><span class="ftotal-value" style="color:'+(yInc-yExp>=0?'var(--gold)':'#E74C3C')+'">'+fmtN(yInc-yExp)+' грн</span></div>'
+    +'</div></div>';
 }
 
-// ── Calc actions ──────────────────────────────────────────────────────────────
-window.updateCalcItem = function(i, field, val) {
-  STATE.calcItems[i][field] = field==='name' ? val : +val||0;
-  saveData();
-  // Rerender only result
-  const cost = STATE.calcItems.reduce((s,i)=>s+(+i.qty * +i.price),0);
-  document.querySelectorAll('.price-opt-price').forEach((el,idx)=>{
-    const m = [3,4,5][idx];
-    el.textContent = (cost*m).toFixed(0)+' ₴';
-    el.nextElementSibling.textContent = 'прибыль '+(cost*(m-1)).toFixed(0)+' ₴';
+function locStockHtml(ls) {
+  if (!ls || !ls.length) return '';
+  var rows = ls.map(function(l){ return '<div style="display:flex;justify-content:space-between;padding:3px 0"><span class="loc-chip">📍 '+esc(l.loc)+'</span><span style="font-size:12px;font-weight:600">'+l.qty+' шт</span></div>'; }).join('');
+  return '<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">'+rows+'</div>';
+}
+
+function pageCatalog() {
+  var cards = S.products.map(function(p) {
+    var bc = p.status==='Хит'?'b-hit':p.status==='Архив'?'b-archive':'b-active';
+    var bt = p.status==='Хит'?'🔥 Хит':esc(p.status||'');
+    var total = (p.locationStock||[]).reduce(function(s,l){return s+l.qty;},0)||0;
+    var prices = '<span class="pchip">'+fmt(p.price1)+'</span>'
+      +(p.comp2?'<span class="pchip" style="font-size:10px">'+esc(p.comp2)+': '+fmt(p.price2)+'</span>':'')
+      +(p.comp3?'<span class="pchip" style="font-size:10px">'+esc(p.comp3)+': '+fmt(p.price3)+'</span>':'');
+    return '<div class="pc">'
+      +'<div class="pi">'+esc(p.img||'💎')+'</div>'
+      +'<div class="pinfo">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start">'
+      +'<div class="pname">'+esc(p.name)+'</div>'
+      +'<div style="display:flex;gap:4px"><button class="btn-x" onclick="editProduct('+p.id+')">✏️</button><button class="btn-x" onclick="delProduct('+p.id+')">🗑️</button></div>'
+      +'</div>'
+      +'<div class="pdesc">'+esc(p.desc||'')+'</div>'
+      +'<div class="pprices">'+prices+'</div>'
+      +'<div class="pbot"><span class="badge '+bc+'">'+bt+'</span><span style="font-size:11px;color:var(--muted)">Всего: '+total+' шт</span></div>'
+      +locStockHtml(p.locationStock)
+      +'</div></div>';
+  }).join('');
+
+  return '<div>'
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Каталог</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:16px">Украшения, цены и комплекты</div>'
+    +'<div class="card" style="border:2px dashed var(--gold);background:var(--gold-l);margin-bottom:14px">'
+    +'<div class="card-title" style="color:#8B6914">✨ Добавить через AI</div>'
+    +'<div class="ai-zone" onclick="document.getElementById(\'ai-file\').click()">'
+    +'<div id="ai-prev-wrap"><div class="ai-icon">📷</div></div>'
+    +'<div style="font-size:13px;font-weight:600;margin-bottom:3px">Загрузи фото украшения</div>'
+    +'<div style="font-size:11px;color:var(--muted)">AI заполнит карточку автоматически</div>'
+    +'</div>'
+    +'<input type="file" id="ai-file" accept="image/*" style="display:none" onchange="onAiFile(this)"/>'
+    +'<textarea class="fta" id="ai-text" placeholder="Вставь описание, цену, размер…" style="margin-bottom:10px"></textarea>'
+    +'<button class="btn btn-gold" id="ai-btn" onclick="doAiFill()">✨ Заполнить через AI</button>'
+    +'</div>'
+    +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">'
+    +'<div class="sec-head" style="margin:0">Все товары ('+S.products.length+')</div>'
+    +'<button class="btn btn-outline btn-sm" onclick="openProductModal({})">+ Вручную</button>'
+    +'</div>'
+    +(S.products.length ? cards : '<div class="empty"><div class="empty-icon">💎</div><div>Добавь первый товар</div></div>')
+    +'</div>';
+}
+
+function pageCalc() {
+  var items = S.calcItems.map(function(item,i){
+    return '<div class="ci">'
+      +'<input class="fi" style="flex:1;padding:7px 9px;font-size:13px" value="'+esc(item.name)+'" oninput="S.calcItems['+i+'].name=this.value;saveNow()" placeholder="Материал"/>'
+      +'<input class="fi" type="number" value="'+item.qty+'" oninput="S.calcItems['+i+'].qty=+this.value||0;updateCalcResult()" style="width:55px;padding:7px 8px;font-size:13px" placeholder="Кол"/>'
+      +'<input class="fi" type="number" value="'+item.price+'" oninput="S.calcItems['+i+'].price=+this.value||0;updateCalcResult()" style="width:70px;padding:7px 8px;font-size:13px" placeholder="₴"/>'
+      +'<button class="btn-x" onclick="S.calcItems.splice('+i+',1);render()" style="color:var(--red)">✕</button>'
+      +'</div>';
+  }).join('');
+  var cost = S.calcItems.reduce(function(s,i){return s+i.qty*i.price;},0);
+
+  return '<div>'
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Калькулятор</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:16px">Себестоимость украшения</div>'
+    +'<div class="card">'
+    +'<div class="card-title">Материалы и упаковка</div>'
+    +items
+    +'<div style="display:flex;gap:8px;margin-top:12px">'
+    +'<input class="fi" id="ni-name" placeholder="Материал" style="flex:2;padding:9px 11px;font-size:13px"/>'
+    +'<input class="fi" id="ni-qty" type="number" placeholder="Кол" style="width:58px;padding:9px 8px;font-size:13px"/>'
+    +'<input class="fi" id="ni-price" type="number" placeholder="₴" style="width:68px;padding:9px 8px;font-size:13px"/>'
+    +'<button class="btn btn-outline btn-sm" onclick="addCalcItem()">+</button>'
+    +'</div></div>'
+    +'<div class="calc-result" id="calc-result">'
+    +'<div class="cr-label">Себестоимость</div>'
+    +'<div class="cr-value" id="cr-cost">'+cost.toFixed(0)+' грн</div>'
+    +'<div class="popts">'
+    +[[3,'Мин'],[4,'Комфорт'],[5,'Премиум']].map(function(m){
+      return '<div class="popt"><div class="popt-label">×'+m[0]+' '+m[1]+'</div><div class="popt-price" id="po'+m[0]+'">'+(cost*m[0]).toFixed(0)+' ₴</div><div class="popt-profit" id="pp'+m[0]+'">прибыль '+(cost*(m[0]-1)).toFixed(0)+' ₴</div></div>';
+    }).join('')
+    +'</div></div></div>';
+}
+
+function pagePurchases() {
+  var goodS = [], badS = [];
+  S.purchases.forEach(function(p){ if(p.buyMore==='ДА'&&p.supplier&&goodS.indexOf(p.supplier)===-1) goodS.push(p.supplier); if(p.buyMore==='НЕТ'&&p.supplier&&badS.indexOf(p.supplier)===-1) badS.push(p.supplier); });
+  var suppHtml = (goodS.length||badS.length) ? '<div class="card" style="margin-bottom:14px"><div class="card-title">📋 Поставщики</div>'
+    +(goodS.length?'<div style="font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px">✅ Рекомендую</div>'+goodS.map(function(s){return '<div style="font-size:13px;padding:3px 0">'+esc(s)+'</div>';}).join(''):'')
+    +(badS.length?'<div style="font-size:11px;font-weight:600;color:var(--red);text-transform:uppercase;letter-spacing:.5px;margin:8px 0 5px">❌ Не рекомендую</div>'+badS.map(function(s){return '<div style="font-size:13px;padding:3px 0">'+esc(s)+'</div>';}).join(''):'')
+    +'</div>' : '';
+
+  var cards = S.purchases.map(function(p){
+    var bc = p.buyMore==='ДА'?'b-yes':p.buyMore==='НЕТ'?'b-no':'b-maybe';
+    var bt = p.buyMore==='ДА'?'✅ ДА':p.buyMore==='НЕТ'?'❌ НЕТ':'🤔 Попробовать';
+    var stars = '⭐'.repeat(p.quality||0);
+    var lnk = p.link ? '<a href="'+esc(p.link)+'" target="_blank" style="display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--gold);font-weight:600;text-decoration:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">🔗 Ссылка на поставщика</a>' : '';
+    return '<div class="prc">'
+      +'<div class="prc-h"><div><div class="prc-name">'+esc(p.name)+'</div><div class="prc-meta">'+esc(p.supplier||'—')+' · '+esc(p.date||'—')+'</div></div>'
+      +'<button class="btn-x" onclick="delPurchase('+p.id+')" style="color:var(--red)">🗑️</button></div>'
+      +'<div class="prc-row"><span style="color:var(--muted)">Сумма</span><span style="font-weight:700">'+fmt(p.amount)+'</span></div>'
+      +'<div class="prc-row"><span style="color:var(--muted)">Объём</span><span>'+p.qty+' '+esc(p.unit||'')+'</span></div>'
+      +'<div class="prc-row"><span style="color:var(--muted)">Качество</span><span>'+stars+'</span></div>'
+      +'<div class="prc-row"><span style="color:var(--muted)">Брать ещё?</span><span class="'+bc+'">'+bt+'</span></div>'
+      +(p.comment?'<div style="font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">'+esc(p.comment)+'</div>':'')
+      +lnk+'</div>';
+  }).join('');
+
+  var total = S.purchases.reduce(function(s,p){return s+(p.amount||0);},0);
+
+  return '<div>'
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Закупки</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:16px">Материалы и контроль качества</div>'
+    +suppHtml
+    +'<div class="sec-head">Все закупки ('+S.purchases.length+')</div>'
+    +(S.purchases.length ? cards : '<div class="empty"><div class="empty-icon">🛒</div><div>Нет закупок</div></div>')
+    +(S.purchases.length?'<div class="ftotal" style="margin-top:8px"><span class="ftotal-label">Итого на закупки</span><span class="ftotal-value">'+fmtN(total)+' грн</span></div>':'')
+    +'</div>';
+}
+
+function pageFinance() {
+  var fm = S.finance[S.activeMonth] || {};
+  var inc = (fm.incomeIG||0)+(fm.incomeAbout||0)+(fm.incomeOther||0);
+  var exp = (fm.expSalary||0)+(fm.expTeam||0)+(fm.expMaterials||0)+(fm.expFurniture||0)+(fm.expPackaging||0)+(fm.expDeliveryIn||0)+(fm.expAds||0)+(fm.expSmm||0)+(fm.expPhoto||0)+(fm.expStudio||0)+(fm.expDeliveryOut||0)+(fm.expOther||0);
+  var profit = inc - exp;
+
+  var tabs = MONTHS.map(function(m,i){
+    return '<button class="mt'+(i===S.activeMonth?' active':'')+'" onclick="S.activeMonth='+i+';render()">'+m.slice(0,3)+'</button>';
+  }).join('');
+
+  function fi(k,label) {
+    return '<div class="fr"><span class="fr-label">'+label+'</span><input class="fr-input" type="number" value="'+(fm[k]||'')+'" oninput="S.finance['+S.activeMonth+'][\''+k+'\']=+this.value||0;scheduleSave()" placeholder="0"/></div>';
+  }
+
+  var groups = [
+    {label:'👥 Команда / ЗП',color:'#8E44AD',rows:[['expSalary','Зарплата (своя)'],['expTeam','Команда / фрилансеры']]},
+    {label:'📦 Производство',color:'#2980B9',rows:[['expMaterials','Материалы'],['expFurniture','Фурнитура'],['expPackaging','Упаковка'],['expDeliveryIn','Доставка материалов']]},
+    {label:'📣 Маркетинг',color:'#E67E22',rows:[['expAds','Реклама / трафик'],['expSmm','SMM'],['expPhoto','Фотограф / съёмка'],['expStudio','Аренда студии']]},
+    {label:'🚚 Доставка клиентам',color:'#27AE60',rows:[['expDeliveryOut','Доставка клиентам']]},
+    {label:'📋 Прочее',color:'#7F8C8D',rows:[['expOther','Прочие расходы']]},
+  ];
+
+  var expHtml = groups.map(function(g){
+    var gt = g.rows.reduce(function(s,r){return s+(fm[r[0]]||0);},0);
+    return '<div style="margin-bottom:12px">'
+      +'<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:2px solid '+g.color+'33;margin-bottom:2px">'
+      +'<span style="font-size:12px;font-weight:700;color:'+g.color+'">'+g.label+'</span>'
+      +(gt?'<span style="font-size:12px;font-weight:700;color:'+g.color+'">'+fmtN(gt)+' грн</span>':'')
+      +'</div>'
+      +g.rows.map(function(r){return fi(r[0],r[1]);}).join('')
+      +'</div>';
+  }).join('');
+
+  return '<div>'
+    +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:26px;font-weight:700;margin-bottom:2px">Финансы</div>'
+    +'<div style="font-size:12px;color:var(--muted);margin-bottom:16px">Доходы и расходы</div>'
+    +'<div class="mtabs">'+tabs+'</div>'
+    +'<div class="card"><div class="card-title">💚 Доходы</div>'
+    +fi('incomeIG','Instagram')+fi('incomeAbout','Кафе About')+fi('incomeOther','Другие')
+    +'<div class="ftotal"><span class="ftotal-label">Итого доход</span><span class="ftotal-value" style="color:var(--gold)">'+fmtN(inc)+' грн</span></div>'
+    +'</div>'
+    +'<div class="card"><div class="card-title">🔴 Расходы по статьям</div>'+expHtml
+    +'<div class="ftotal"><span class="ftotal-label">Итого расходы</span><span class="ftotal-value" style="color:#E74C3C">'+fmtN(exp)+' грн</span></div>'
+    +'</div>'
+    +'<div class="profit-block"><div class="profit-label">Чистая прибыль — '+MONTHS[S.activeMonth]+'</div>'
+    +'<div class="profit-value" style="color:'+(profit>=0?'var(--gold)':'#E74C3C')+'">'+fmtN(profit)+' грн</div>'
+    +'</div></div>';
+}
+
+// ── Calc helpers ──────────────────────────────────────────────────────────────
+function saveNow() { localStorage.setItem(SK, JSON.stringify(S)); }
+
+function updateCalcResult() {
+  var cost = S.calcItems.reduce(function(s,i){return s+i.qty*i.price;},0);
+  var c = document.getElementById('cr-cost'); if(c) c.textContent = cost.toFixed(0)+' грн';
+  [[3,'po3','pp3'],[4,'po4','pp4'],[5,'po5','pp5']].forEach(function(m){
+    var pe = document.getElementById(m[1]), pr = document.getElementById(m[2]);
+    if(pe) pe.textContent = (cost*m[0]).toFixed(0)+' ₴';
+    if(pr) pr.textContent = 'прибыль '+(cost*(m[0]-1)).toFixed(0)+' ₴';
   });
-  const v = document.querySelector('.calc-cost-value');
-  if(v) v.textContent = cost.toFixed(0)+' грн';
+  saveNow();
 }
-window.removeCalcItem = function(i) {
-  STATE.calcItems.splice(i,1); render();
-}
-window.addCalcItem = function() {
-  const n = document.getElementById('new-item-name').value.trim();
-  const q = +document.getElementById('new-item-qty').value||1;
-  const p = +document.getElementById('new-item-price').value||0;
-  if(!n) return;
-  STATE.calcItems.push({name:n,qty:q,price:p});
+
+function addCalcItem() {
+  var n = document.getElementById('ni-name').value.trim();
+  var q = +document.getElementById('ni-qty').value||1;
+  var p = +document.getElementById('ni-price').value||0;
+  if (!n) return;
+  S.calcItems.push({name:n,qty:q,price:p});
   render();
 }
 
-// ── Product modal ─────────────────────────────────────────────────────────────
-let editingId = null;
-window.openProductModal = function(prefill) {
-  editingId = null;
-  showModal('product', prefill || {});
-}
-window.editProduct = function(id) {
-  editingId = id;
-  const p = STATE.products.find(p=>p.id===id);
-  showModal('product', p);
-}
-window.deleteProduct = function(id) {
-  if(confirm('Удалить товар?')) { STATE.products = STATE.products.filter(p=>p.id!==id); scheduleSave(); render(); showToast('Товар удалён'); }
-}
+// ── Product actions ───────────────────────────────────────────────────────────
+var editId = null;
+var locItems = [];
+var aiImgData = null;
 
-// ── Purchase modal ────────────────────────────────────────────────────────────
-window.openPurchaseModal = function() { showModal('purchase', {}); }
-window.deletePurchase = function(id) {
-  if(confirm('Удалить закупку?')) { STATE.purchases = STATE.purchases.filter(p=>p.id!==id); scheduleSave(); render(); showToast('Закупка удалена'); }
-}
-
-// ── Modal ─────────────────────────────────────────────────────────────────────
-function showModal(type, data) {
-  const backdrop = document.createElement('div');
-  backdrop.className = 'modal-backdrop';
-  backdrop.onclick = e => { if(e.target===backdrop) backdrop.remove(); };
-
-  currentLocations = JSON.parse(JSON.stringify(data.locationStock||[]));
-  if(type === 'product') {
-    backdrop.innerHTML = `
-      <div class="modal">
-        <div class="modal-handle"></div>
-        <div class="modal-title">${editingId ? 'Редактировать' : 'Новый товар'}</div>
-        <div class="form-group"><label class="form-label">Название</label><input class="form-input" id="m-name" value="${data.name||''}"/></div>
-        <div class="form-group"><label class="form-label">Описание / материал</label><textarea class="form-textarea" id="m-desc" rows="2">${data.desc||''}</textarea></div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Материал</label><input class="form-input" id="m-material" value="${data.material||''}"/></div>
-          <div class="form-group"><label class="form-label">Иконка</label><input class="form-input" id="m-img" value="${data.img||'💎'}"/></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Цена 1 шт (грн)</label><input class="form-input" id="m-price1" type="number" value="${data.price1||''}"/></div>
-          <div class="form-group"><label class="form-label">Себестоимость</label><input class="form-input" id="m-cost" type="number" value="${data.cost||''}"/></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Комплект 2 (состав)</label><input class="form-input" id="m-comp2" value="${data.comp2||''}" placeholder="Браслет + чокер"/></div>
-          <div class="form-group"><label class="form-label">Цена комплект 2</label><input class="form-input" id="m-price2" type="number" value="${data.price2||''}"/></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Комплект 3 (состав)</label><input class="form-input" id="m-comp3" value="${data.comp3||''}" placeholder="+ серьги"/></div>
-          <div class="form-group"><label class="form-label">Цена комплект 3</label><input class="form-input" id="m-price3" type="number" value="${data.price3||''}"/></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Остаток (шт)</label><input class="form-input" id="m-stock" type="number" value="${data.stock||1}"/></div>
-          <div class="form-group"><label class="form-label">Статус</label>
-            <select class="form-select" id="m-status">
-              <option ${(!data.status||data.status==='Активный')?'selected':''}>Активный</option>
-              <option ${data.status==='Хит'?'selected':''}>Хит</option>
-              <option ${data.status==='Архив'?'selected':''}>Архив</option>
-            </select>
-          </div>
-        </div>
-        <div class="modal-actions">
-          <button class="btn btn-outline" onclick="this.closest('.modal-backdrop').remove()">Отмена</button>
-          <button class="btn btn-primary" onclick="saveProduct()">Сохранить</button>
-        </div>
-      </div>`;
-  } else {
-    backdrop.innerHTML = `
-      <div class="modal">
-        <div class="modal-handle"></div>
-        <div class="modal-title">Новая закупка</div>
-        <div class="form-group"><label class="form-label">Материал</label><input class="form-input" id="p-name" value="${data.name||''}"/></div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Поставщик</label><input class="form-input" id="p-supplier" value="${data.supplier||''}"/></div>
-          <div class="form-group"><label class="form-label">Дата</label><input class="form-input" id="p-date" value="${data.date||''}" placeholder="дд.мм.гггг"/></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Сумма (грн)</label><input class="form-input" id="p-amount" type="number" value="${data.amount||''}"/></div>
-          <div class="form-group"><label class="form-label">Кол-во</label><input class="form-input" id="p-qty" type="number" value="${data.qty||''}"/></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label class="form-label">Единица</label>
-            <select class="form-select" id="p-unit">
-              <option>шт</option><option>м</option><option>г</option><option>кг</option>
-            </select>
-          </div>
-          <div class="form-group"><label class="form-label">Качество (1-5)</label>
-            <select class="form-select" id="p-quality">
-              ${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===5?'selected':''}>${n} ${'⭐'.repeat(n)}</option>`).join('')}
-            </select>
-          </div>
-        </div>
-        <div class="form-group"><label class="form-label">Брать ещё?</label>
-          <select class="form-select" id="p-buymore">
-            <option>ДА</option><option>НЕТ</option><option>ПОПРОБОВАТЬ</option>
-          </select>
-        </div>
-        <div class="form-group"><label class="form-label">Комментарий о качестве</label><textarea class="form-textarea" id="p-comment" rows="2"></textarea></div>
-        <div class="form-group"><label class="form-label">🔗 Ссылка на поставщика</label><input class="form-input" id="p-link" placeholder="https://..."/></div>
-        <div class="modal-actions">
-          <button class="btn btn-outline" onclick="this.closest('.modal-backdrop').remove()">Отмена</button>
-          <button class="btn btn-primary" onclick="savePurchase()">Сохранить</button>
-        </div>
-      </div>`;
-  }
-  document.body.appendChild(backdrop);
+function openProductModal(data) {
+  editId = data.id || null;
+  locItems = JSON.parse(JSON.stringify(data.locationStock || []));
+  var d = document.createElement('div');
+  d.className = 'modal-backdrop';
+  d.id = 'pm';
+  d.innerHTML = '<div class="modal">'
+    +'<div class="modal-handle"></div>'
+    +'<div class="modal-title">'+(editId?'Редактировать':'Новый товар')+'</div>'
+    +'<div class="fg"><label>Название</label><input class="fi" id="m-name" value="'+esc(data.name||'')+'"/></div>'
+    +'<div class="fg"><label>Описание / материал</label><textarea class="fta" id="m-desc">'+esc(data.desc||'')+'</textarea></div>'
+    +'<div class="frow"><div class="fg"><label>Материал</label><input class="fi" id="m-mat" value="'+esc(data.material||'')+'"/></div>'
+    +'<div class="fg"><label>Иконка</label><input class="fi" id="m-img" value="'+esc(data.img||'💎')+'"/></div></div>'
+    +'<div class="frow"><div class="fg"><label>Цена 1 шт (грн)</label><input class="fi" type="number" id="m-p1" value="'+(data.price1||'')+'"/></div>'
+    +'<div class="fg"><label>Себестоимость</label><input class="fi" type="number" id="m-cost" value="'+(data.cost||'')+'"/></div></div>'
+    +'<div class="frow"><div class="fg"><label>Комплект 2 (состав)</label><input class="fi" id="m-c2" value="'+esc(data.comp2||'')+'" placeholder="Браслет + чокер"/></div>'
+    +'<div class="fg"><label>Цена комплект 2</label><input class="fi" type="number" id="m-p2" value="'+(data.price2||'')+'"/></div></div>'
+    +'<div class="frow"><div class="fg"><label>Комплект 3 (состав)</label><input class="fi" id="m-c3" value="'+esc(data.comp3||'')+'" placeholder="+ серьги"/></div>'
+    +'<div class="fg"><label>Цена комплект 3</label><input class="fi" type="number" id="m-p3" value="'+(data.price3||'')+'"/></div></div>'
+    +'<div class="frow"><div class="fg"><label>Остаток (шт)</label><input class="fi" type="number" id="m-stock" value="'+(data.stock||1)+'"/></div>'
+    +'<div class="fg"><label>Статус</label><select class="fi" id="m-status"><option'+((!data.status||data.status==='Активный')?' selected':'')+'>Активный</option><option'+(data.status==='Хит'?' selected':'')+'>Хит</option><option'+(data.status==='Архив'?' selected':'')+'>Архив</option></select></div></div>'
+    +'<div class="fg"><label>📍 Где выставлено и сколько</label>'
+    +'<div id="loc-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px"></div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:8px">'
+    +'<input class="fi" id="loc-name" placeholder="Кафе About / Магазин…" style="flex:1"/>'
+    +'<input class="fi" type="number" id="loc-qty" placeholder="шт" value="1" style="width:58px;text-align:center"/>'
+    +'<button class="btn btn-outline btn-sm" onclick="addLoc()">+</button></div>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:5px">'+['Кафе About','Instagram','Ярмарка','Магазин','Шоурум'].map(function(s){return '<button onclick="quickLoc(\''+s+'\')" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer">'+s+'</button>';}).join('')+'</div></div>'
+    +'<div class="mact"><button class="btn btn-outline" onclick="document.getElementById(\'pm\').remove()">Отмена</button><button class="btn btn-red" onclick="saveProduct()">Сохранить</button></div>'
+    +'</div>';
+  document.body.appendChild(d);
+  d.addEventListener('click', function(e){ if(e.target===d) d.remove(); });
+  renderLocList();
 }
 
-let currentLocations = []; // array of {loc, qty}
-
-window.addLocation = function() {
-  const inp = document.getElementById('m-loc-input');
-  const qtyInp = document.getElementById('m-loc-qty');
-  const val = inp.value.trim();
-  const qty = parseInt(qtyInp.value) || 1;
-  if(!val) return;
-  if(currentLocations.find(l=>l.loc===val)) return;
-  currentLocations.push({loc:val, qty});
-  inp.value = ''; qtyInp.value = '1';
-  refreshLocChips();
+function renderLocList() {
+  var el = document.getElementById('loc-list'); if(!el) return;
+  el.innerHTML = locItems.map(function(l,i){
+    return '<div style="display:flex;align-items:center;gap:8px">'
+      +'<span class="loc-chip" style="flex:1;padding:5px 10px">📍 '+esc(l.loc)+'</span>'
+      +'<input type="number" value="'+l.qty+'" onchange="locItems['+i+'].qty=+this.value||0" style="width:58px;padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;text-align:center;outline:none"/>'
+      +'<span style="font-size:11px;color:var(--muted)">шт</span>'
+      +'<button class="btn-x" onclick="locItems.splice('+i+',1);renderLocList()" style="color:var(--red)">×</button>'
+      +'</div>';
+  }).join('');
 }
 
-window.quickLocation = function(val) {
-  if(!currentLocations.find(l=>l.loc===val)) {
-    currentLocations.push({loc:val, qty:1});
-    refreshLocChips();
-  }
+function addLoc() {
+  var n = document.getElementById('loc-name').value.trim();
+  var q = +document.getElementById('loc-qty').value||1;
+  if (!n || locItems.find(function(l){return l.loc===n;})) return;
+  locItems.push({loc:n,qty:q});
+  document.getElementById('loc-name').value='';
+  document.getElementById('loc-qty').value='1';
+  renderLocList();
 }
 
-window.removeLocation = function(i) {
-  currentLocations.splice(i,1);
-  refreshLocChips();
+function quickLoc(v) {
+  if (!locItems.find(function(l){return l.loc===v;})) { locItems.push({loc:v,qty:1}); renderLocList(); }
 }
 
-window.updateLocQty = function(i, val) {
-  currentLocations[i].qty = parseInt(val)||0;
-}
-
-function refreshLocChips() {
-  const el = document.getElementById('loc-chips');
-  if(!el) return;
-  el.innerHTML = currentLocations.map((l,i)=>`<div style="display:flex;align-items:center;gap:8px"><span style="background:var(--gold-l);border:1px solid var(--gold);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:600;color:#8B6914;flex:1">📍 ${l.loc}</span><input type="number" min="0" value="${l.qty}" onchange="updateLocQty(${i},this.value)" style="width:60px;padding:6px 8px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;text-align:center;outline:none"/><span style="font-size:11px;color:var(--muted)">шт</span><button onclick="removeLocation(${i})" style="background:none;border:none;cursor:pointer;color:var(--red);font-size:18px;line-height:1;padding:2px">×</button></div>`).join('');
-}
-
-window.saveProduct = function() {
-  const p = {
+function saveProduct() {
+  var p = {
     name: document.getElementById('m-name').value.trim(),
     desc: document.getElementById('m-desc').value.trim(),
-    material: document.getElementById('m-material').value.trim(),
-    img: document.getElementById('m-img').value.trim() || '💎',
-    price1: +document.getElementById('m-price1').value || 0,
-    cost: +document.getElementById('m-cost').value || 0,
-    comp2: document.getElementById('m-comp2').value.trim(),
-    price2: +document.getElementById('m-price2').value || 0,
-    comp3: document.getElementById('m-comp3').value.trim(),
-    price3: +document.getElementById('m-price3').value || 0,
-    stock: +document.getElementById('m-stock').value || 1,
+    material: document.getElementById('m-mat').value.trim(),
+    img: document.getElementById('m-img').value.trim()||'💎',
+    price1: +document.getElementById('m-p1').value||0,
+    cost: +document.getElementById('m-cost').value||0,
+    comp2: document.getElementById('m-c2').value.trim(),
+    price2: +document.getElementById('m-p2').value||0,
+    comp3: document.getElementById('m-c3').value.trim(),
+    price3: +document.getElementById('m-p3').value||0,
+    stock: +document.getElementById('m-stock').value||1,
     status: document.getElementById('m-status').value,
-    locationStock: JSON.parse(JSON.stringify(currentLocations)),
-    locations: currentLocations.map(l=>l.loc),
+    locationStock: JSON.parse(JSON.stringify(locItems)),
   };
-  if(!p.name) return alert('Введи название');
-  if(editingId) {
-    STATE.products = STATE.products.map(pr=>pr.id===editingId?{...p,id:editingId}:pr);
+  if (!p.name) { alert('Введи название'); return; }
+  if (editId) {
+    S.products = S.products.map(function(pr){ return pr.id===editId ? Object.assign({},pr,p) : pr; });
   } else {
     p.id = Date.now();
-    STATE.products.push(p);
+    S.products.push(p);
   }
-  document.querySelector('.modal-backdrop').remove();
-  scheduleSave(); render(); showToast(editingId?'Товар обновлён':'Товар добавлен ✓');
+  var pm = document.getElementById('pm'); if(pm) pm.remove();
+  scheduleSave(); render();
+  toast(editId?'Товар обновлён ✓':'Товар добавлен ✓');
 }
 
-window.savePurchase = function() {
-  const p = {
+function editProduct(id) {
+  var p = S.products.find(function(p){return p.id===id;});
+  if (p) openProductModal(p);
+}
+
+function delProduct(id) {
+  if (confirm('Удалить товар?')) {
+    S.products = S.products.filter(function(p){return p.id!==id;});
+    scheduleSave(); render(); toast('Товар удалён');
+  }
+}
+
+// ── Purchase actions ──────────────────────────────────────────────────────────
+function openPurchaseModal() {
+  var d = document.createElement('div');
+  d.className = 'modal-backdrop'; d.id = 'ppm';
+  d.innerHTML = '<div class="modal">'
+    +'<div class="modal-handle"></div>'
+    +'<div class="modal-title">Новая закупка</div>'
+    +'<div class="fg"><label>Материал</label><input class="fi" id="pp-name"/></div>'
+    +'<div class="frow"><div class="fg"><label>Поставщик</label><input class="fi" id="pp-sup"/></div>'
+    +'<div class="fg"><label>Дата</label><input class="fi" id="pp-date" placeholder="дд.мм.гггг"/></div></div>'
+    +'<div class="frow"><div class="fg"><label>Сумма (грн)</label><input class="fi" type="number" id="pp-amt"/></div>'
+    +'<div class="fg"><label>Кол-во</label><input class="fi" type="number" id="pp-qty"/></div></div>'
+    +'<div class="frow"><div class="fg"><label>Единица</label><select class="fi" id="pp-unit"><option>шт</option><option>м</option><option>г</option><option>кг</option></select></div>'
+    +'<div class="fg"><label>Качество (1-5)</label><select class="fi" id="pp-q">'+[1,2,3,4,5].map(function(n){return '<option value="'+n+'"'+(n===5?' selected':'')+'>'+n+' '+'⭐'.repeat(n)+'</option>';}).join('')+'</select></div></div>'
+    +'<div class="fg"><label>Брать ещё?</label><select class="fi" id="pp-bm"><option>ДА</option><option>НЕТ</option><option>ПОПРОБОВАТЬ</option></select></div>'
+    +'<div class="fg"><label>Комментарий о качестве</label><textarea class="fta" id="pp-comment"></textarea></div>'
+    +'<div class="fg"><label>🔗 Ссылка на поставщика</label><input class="fi" id="pp-link" placeholder="https://..."/></div>'
+    +'<div class="mact"><button class="btn btn-outline" onclick="document.getElementById(\'ppm\').remove()">Отмена</button><button class="btn btn-red" onclick="savePurchase()">Сохранить</button></div>'
+    +'</div>';
+  document.body.appendChild(d);
+  d.addEventListener('click', function(e){ if(e.target===d) d.remove(); });
+}
+
+function savePurchase() {
+  var p = {
     id: Date.now(),
-    name: document.getElementById('p-name').value.trim(),
-    supplier: document.getElementById('p-supplier').value.trim(),
-    date: document.getElementById('p-date').value.trim(),
-    amount: +document.getElementById('p-amount').value || 0,
-    qty: +document.getElementById('p-qty').value || 0,
-    unit: document.getElementById('p-unit').value,
-    quality: +document.getElementById('p-quality').value,
-    buyMore: document.getElementById('p-buymore').value,
-    comment: document.getElementById('p-comment').value.trim(),
-    link: document.getElementById('p-link').value.trim(),
+    name: document.getElementById('pp-name').value.trim(),
+    supplier: document.getElementById('pp-sup').value.trim(),
+    date: document.getElementById('pp-date').value.trim(),
+    amount: +document.getElementById('pp-amt').value||0,
+    qty: +document.getElementById('pp-qty').value||0,
+    unit: document.getElementById('pp-unit').value,
+    quality: +document.getElementById('pp-q').value,
+    buyMore: document.getElementById('pp-bm').value,
+    comment: document.getElementById('pp-comment').value.trim(),
+    link: document.getElementById('pp-link').value.trim(),
   };
-  if(!p.name) return alert('Введи название материала');
-  STATE.purchases.push(p);
-  document.querySelector('.modal-backdrop').remove();
-  scheduleSave(); render(); showToast('Закупка добавлена ✓');
+  if (!p.name) { alert('Введи название материала'); return; }
+  S.purchases.push(p);
+  var ppm = document.getElementById('ppm'); if(ppm) ppm.remove();
+  scheduleSave(); render(); toast('Закупка добавлена ✓');
 }
 
-// ── AI ────────────────────────────────────────────────────────────────────────
-let aiImageData = null;
-window.handleAiImage = function(input) {
-  const file = input.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    aiImageData = { data: e.target.result.split(',')[1], type: file.type };
-    const preview = document.getElementById('ai-preview-img');
-    const icon = document.getElementById('ai-zone-icon');
-    if(preview) { preview.src = e.target.result; preview.style.display='block'; }
-    if(icon) icon.style.display='none';
+function delPurchase(id) {
+  if (confirm('Удалить закупку?')) {
+    S.purchases = S.purchases.filter(function(p){return p.id!==id;});
+    scheduleSave(); render(); toast('Закупка удалена');
+  }
+}
+
+// ── AI fill ───────────────────────────────────────────────────────────────────
+function onAiFile(input) {
+  var file = input.files[0]; if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    aiImgData = {data: e.target.result.split(',')[1], type: file.type};
+    var w = document.getElementById('ai-prev-wrap');
+    if(w) w.innerHTML = '<img src="'+e.target.result+'" style="width:80px;height:80px;object-fit:cover;border-radius:10px;margin-bottom:6px"/>';
   };
   reader.readAsDataURL(file);
 }
 
-window.handleAiFill = async function() {
-  const text = document.getElementById('ai-text')?.value || '';
-  if(!text && !aiImageData) return alert('Добавь фото или описание');
-  const btn = document.getElementById('ai-fill-btn');
-  if(btn) { btn.innerHTML='<div class="spinner"></div> AI заполняет…'; btn.disabled=true; }
+async function doAiFill() {
+  var text = (document.getElementById('ai-text')||{}).value||'';
+  if (!text && !aiImgData) { alert('Добавь фото или описание'); return; }
+  var btn = document.getElementById('ai-btn');
+  if(btn){ btn.innerHTML='<div class="spinner"></div> AI заполняет…'; btn.disabled=true; }
   try {
-    const content = [];
-    if(aiImageData) content.push({type:'image',source:{type:'base64',media_type:aiImageData.type,data:aiImageData.data}});
-    content.push({type:'text',text:`Ты помощник для украшений Miro Jewelry. Заполни карточку товара на основе информации. Верни ТОЛЬКО JSON без markdown:\n{"name":"...","desc":"...","material":"...","price1":0,"comp2":"","price2":0,"comp3":"","price3":0,"stock":1,"status":"Активный","cost":0,"img":"💎"}\n\nИнформация: ${text||'Смотри на фото'}`});
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content}]})
-    });
-    const data = await res.json();
-    const raw = data.content?.find(b=>b.type==='text')?.text || '{}';
-    const parsed = JSON.parse(raw.replace(/```json?|```/g,'').trim());
-    aiImageData = null;
-    editingId = null;
-    document.querySelector('.modal-backdrop')?.remove();
-    showModal('product', parsed);
-    showToast('AI заполнил карточку ✓');
-  } catch(e) {
-    alert('Ошибка AI. Заполни вручную.');
-  }
-  if(btn) { btn.innerHTML='✨ Заполнить карточку через AI'; btn.disabled=false; }
+    var content = [];
+    if(aiImgData) content.push({type:'image',source:{type:'base64',media_type:aiImgData.type,data:aiImgData.data}});
+    content.push({type:'text',text:'Заполни карточку украшения Miro Jewelry. Верни ТОЛЬКО JSON без markdown:\n{"name":"","desc":"","material":"","price1":0,"comp2":"","price2":0,"comp3":"","price3":0,"stock":1,"status":"Активный","cost":0,"img":"💎"}\n\nИнформация: '+(text||'смотри на фото')});
+    var res = await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:content}]})});
+    var data = await res.json();
+    var raw = (data.content||[]).filter(function(b){return b.type==='text';})[0];
+    if(raw){ var parsed = JSON.parse(raw.text.replace(/```json?|```/g,'').trim()); openProductModal(parsed); toast('AI заполнил карточку ✓'); }
+  } catch(e) { alert('Ошибка AI: '+e.message); }
+  if(btn){ btn.innerHTML='✨ Заполнить через AI'; btn.disabled=false; }
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
-async function init() {
-  try {
-    await initSupabase();
-    const cloudData = await loadFromCloud();
-    if (cloudData) {
-      STATE = cloudData;
-      saveData();
-    }
-  } catch(e) {
-    console.warn('Cloud load failed, using local:', e);
-  }
-  try {
-    render();
-  } catch(e) {
-    console.error('Render error:', e);
-    document.getElementById('scroll-area').innerHTML = 
-      '<div style="padding:20px;color:red;font-size:12px">Ошибка: ' + e.message + '<br><pre>' + e.stack + '</pre></div>';
-  }
-}
-init();
+render();
+initSB().then(function(){ return loadCloud(); }).then(function(cloud){ if(cloud){ S=validateState(cloud); localStorage.setItem(SK,JSON.stringify(S)); render(); } });
 </script>
 </body>
 </html>
